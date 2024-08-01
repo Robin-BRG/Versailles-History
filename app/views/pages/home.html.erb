@@ -1,2 +1,13 @@
-<h1>Pages#home</h1>
-<p>Find me in app/views/pages/home.html.erb</p>
+<div class="herobanner">
+    <div class="herobanner-content">
+        <img src="https://images.unsplash.com/photo-1612143241883-35889d1d65ab?q=80&w=1335&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="herobanner">
+    </div>
+    <div class="herobanner-cta">
+        <%= link_to 'go to map', map_path %>
+    </div>
+</div>
+
+<h1>Hello</h1>
+<p>Hello</p>
+
+<%= render 'shared/menu_button' %>

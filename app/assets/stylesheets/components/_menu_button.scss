@@ -1,0 +1,156 @@
+
+//vars
+$fg:#3f8d6a;
+$bg:#3f51b5;
+$pi:3.14;
+
+//config
+$menu-items:5;
+$open-distance:115px;
+$opening-angle:$pi - .2;
+
+$angles: (
+  1: (x: -0.98, y: -0.17),  // 8h
+  2: (x: -0.64, y: -0.77),  // 10h
+  3: (x: 0, y: -1),         // 12h
+  4: (x: 0.64, y: -0.77),   // 14h
+  5: (x: 0.98, y: -0.17)    // 16h
+);
+
+body{
+  background:$bg;
+  color:white;
+  text-align:center;
+}
+a{
+  color:inherit;
+}
+h1, h2, h3, h4{
+  margin:0;
+  margin-bottom:10px;
+  margin-top:10px;
+}
+h1{
+  font-size:3em;
+}
+%goo{
+  filter:url('#shadowed-goo');
+  // debug 
+  // background:rgba(255,0,0,0.2);
+}
+%ball{
+  background:$fg;
+  border-radius:100%;
+  width:80px;
+  height:80px;
+  margin-left:-40px;
+  position:absolute;
+  bottom:20px;
+  color:white;
+  text-align:center;
+  line-height:80px;
+  transform:translate3d(0,0,0);
+  transition:transform ease-out 200ms;
+}
+.menu-open{
+  display:none;
+}
+.menu-item{
+  @extend %ball;
+}
+.hamburger{
+  $width:25px;
+  $height:3px;
+  width:$width;
+  height:$height;
+  background:white;
+  display:block;
+  position:absolute;
+  top:50%;
+  left:50%;
+  margin-left:-$width/2;
+  margin-top:-$height/2;
+  transition:transform 200ms;
+}
+$hamburger-spacing:8px;
+.hamburger-1{
+  transform:translate3d(0,-$hamburger-spacing,0);
+}
+.hamburger-2{
+  transform:translate3d(0,0,0);
+}
+.hamburger-3{
+  transform:translate3d(0,$hamburger-spacing,0);
+}
+.menu-open:checked+.menu-open-button{
+  .hamburger-1{
+    transform:translate3d(0,0,0) rotate(45deg); 
+  }
+  .hamburger-2{
+    transform:translate3d(0,0,0) scale(0.1,1);
+  }
+  .hamburger-3{
+    transform:translate3d(0,0,0) rotate(-45deg); 
+  }
+}
+.menu{
+    @extend %goo;
+    $width: 380px;
+    $height: auto; // Changé de 100% à auto
+    position: fixed;
+    left: 50%;
+    bottom: 20px; // Ajusté pour laisser un peu d'espace en bas
+    transform: translateX(-50%);
+    padding-bottom: 20px;
+    padding-left: $width/2;
+    width: $width;
+    height: $height;
+    box-sizing: border-box;
+    font-size: 20px;
+    text-align: left;
+    // overflow: hidden; // Supprimé car plus nécessaire
+    z-index: 1000;
+}
+
+
+.menu-item{
+  &:hover{
+    background:white;
+    color:$fg;
+  }
+  @for $i from 1 through $menu-items{
+    &:nth-child(#{$i+2}){
+      transition-duration:10ms+(60ms*($i));
+    }
+  }
+}
+
+.menu-open-button{
+    @extend %ball;
+    z-index:2;
+    transition-timing-function:cubic-bezier(0.175, 0.885, 0.320, 1.275);
+    transition-duration:400ms;
+    transform:scale(1.1,1.1) translate3d(0,0,0);
+    cursor:pointer;
+    bottom:20px; // Ajouté pour positionner le bouton en bas
+  }
+.menu-open-button:hover{
+  transform:scale(1.2,1.2) translate3d(0,0,0);
+}
+.menu-open:checked+.menu-open-button{
+  transition-timing-function:linear;
+  transition-duration:200ms;
+  transform:scale(0.8,0.8) translate3d(0,0,0);
+}
+
+.menu-open:checked~.menu-item{
+    transition-timing-function:cubic-bezier(0.935, 0.000, 0.340, 1.330);
+    @for $i from 1 through $menu-items{
+      &:nth-child(#{$i+2}){
+        transition-duration:80ms+(80ms*$i);
+        $x: map-get(map-get($angles, $i), 'x');
+        $y: map-get(map-get($angles, $i), 'y');
+        transform:translate3d($x*$open-distance, $y*$open-distance, 0);
+      }
+    }
+  }
