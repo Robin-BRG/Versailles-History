@@ -7,4 +7,8 @@ class PagesController < ApplicationController
   def map
     @markers = Marker.all
   end
+
+  def team
+    @teams = Team.all
+  end
 end

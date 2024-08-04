@@ -17,22 +17,7 @@ $angles: (
   5: (x: 0.98, y: -0.17)    // 16h
 );
 
-body{
-  background:$bg;
-  color:white;
-  text-align:center;
-}
-a{
-  color:inherit;
-}
-h1, h2, h3, h4{
-  margin:0;
-  margin-bottom:10px;
-  margin-top:10px;
-}
-h1{
-  font-size:3em;
-}
+
 %goo{
   filter:url('#shadowed-goo');
   // debug 
@@ -51,6 +36,7 @@ h1{
   line-height:80px;
   transform:translate3d(0,0,0);
   transition:transform ease-out 200ms;
+
 }
 .menu-open{
   display:none;
@@ -71,6 +57,7 @@ h1{
   margin-left:-$width/2;
   margin-top:-$height/2;
   transition:transform 200ms;
+
 }
 $hamburger-spacing:8px;
 .hamburger-1{
@@ -133,6 +120,8 @@ $hamburger-spacing:8px;
     transform:scale(1.1,1.1) translate3d(0,0,0);
     cursor:pointer;
     bottom:20px; // Ajouté pour positionner le bouton en bas
+    backdrop-filter: blur(5px);
+
   }
 .menu-open-button:hover{
   transform:scale(1.2,1.2) translate3d(0,0,0);
