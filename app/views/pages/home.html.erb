@@ -1,14 +1,84 @@
-<div class="herobanner">
-    <div class="herobanner-content">
-        <img src="https://images.unsplash.com/photo-1612143241883-35889d1d65ab?q=80&w=1335&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="herobanner">
+<%= render "shared/navbar" %>
+
+<div class="green-section">
+    <div class="container-img">
+        <div class="herobanner-content">
+            <img src="https://images.unsplash.com/photo-1654112787858-2db414596e78?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="herobanner">
+        </div>
     </div>
-    <div class="herobanner-cta">
-        <%= link_to 'go to map', map_path %>
+</div>
+<div class="banner">
+    <div class="banner-container">
+        <div class="banner-to-the-right">
+            <span>Découvrez Versailles</span>
+            <span>Découvrez Versailles</span>
+        </div>
+    </div>
+
+    <div class="banner-container">
+        <div class="banner-to-the-left">
+            <span>Explorez l'Histoire</span>
+            <span>Explorez l'Histoire</span>
+        </div>
     </div>
 </div>
 
-<h1>Hello</h1>
-<p>Hello c'est moi</p>
 
+<section class="about-section">
+  <div class="about-container">
+    <h2>Une aventure unique</h2>
+    <p>
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, 
+quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
+Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. 
+Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+</p>
+</div>
+</section>
 
-<%= render 'shared/menu_button' %>
+<section class="rules-section">
+  <div class="rules-container">
+    <h2>Règles</h2>
+    <p>
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, 
+quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
+Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. 
+Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+</p>
+</div>
+</section>
+
+<section class="slider-container">
+<h2>Des lieux historiques</h2>
+  <article>
+    <div class="slider">
+      <ul>
+        <li><img src="https://images.unsplash.com/photo-1548093425-c81ae30410f0?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" /></li>
+        <li><img src="https://images.unsplash.com/photo-1629720557762-0f6b363aa502?q=80&w=1376&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" /></li>
+        <li><img src="https://images.unsplash.com/photo-1597250580918-4a816313cf17?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" /></li>
+        <li><img src="https://www.sncf-connect.com/assets/styles/ratio_2_1_max_width_961/public/media/2021-08/istock-913634964-yuelan.jpg?h=961e5987&itok=PtgqK7j0" /></li>
+        <li><img src="https://www.shutterstock.com/image-photo/versailles-palace-outside-paris-sunset-600nw-2264734615.jpg" /></li>
+        <li><img src="https://images.ctfassets.net/43cg184ejz07/2fQa0Qp3AxGW6jBaBhszWi/1399dc473e1d2d0ea33ac3cc80dc63a1/Orangerie.jpeg?fm=jpg&w=1024&h=576&fit=fill" /></li>
+        <li><img src="https://images.unsplash.com/photo-1548093425-c81ae30410f0?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" /></li>
+        <li><img src="https://images.unsplash.com/photo-1629720557762-0f6b363aa502?q=80&w=1376&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" /></li>
+        <li><img src="https://images.unsplash.com/photo-1597250580918-4a816313cf17?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" /></li>
+        <li><img src="https://www.sncf-connect.com/assets/styles/ratio_2_1_max_width_961/public/media/2021-08/istock-913634964-yuelan.jpg?h=961e5987&itok=PtgqK7j0" /></li>
+        <li><img src="https://www.shutterstock.com/image-photo/versailles-palace-outside-paris-sunset-600nw-2264734615.jpg" /></li>
+        <li><img src="https://images.ctfassets.net/43cg184ejz07/2fQa0Qp3AxGW6jBaBhszWi/1399dc473e1d2d0ea33ac3cc80dc63a1/Orangerie.jpeg?fm=jpg&w=1024&h=576&fit=fill" /></li>
+      </ul>
+    </div>
+  </article>
+</section>
+
+<section class="partner-section">
+    <h2>Nos partenaires</h2>
+  
+</section>
+
+  <div class="cta-container">
+    <%= link_to team_path, class: "button type--A" do %>
+      <div class="button__line"></div>
+      <div class="button__line"></div>
+      <span class="button__text">Rejoignez la chasse</span>
+    <% end %>
+  </div>
