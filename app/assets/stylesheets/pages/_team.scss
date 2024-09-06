@@ -1,0 +1,114 @@
+.container_team {
+    display: flex;
+    justify-content: center;
+}
+
+.team_card {
+    height: 100px;
+    width: 100vw;
+    margin: 10px 20px;
+    background-color: rgb(55, 55, 55);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 15px;
+}
+
+.team_card_content {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 10px;
+}
+
+.team_card_first_row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.team_card_first_row h2,
+.team_card_first_row p {
+    margin: 0;
+}
+
+.team_card_second_row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.team_card_second_row p,
+.team_card_second_row a {
+    margin: 0;
+}
+
+
+.container_add {
+    display: flex;
+    justify-content: center;
+}
+
+.add_team {
+    border: 1px solid #1EDD88; /* Utilisez votre couleur verte */
+    width: 100vw;
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 15px;
+    margin: 5px 20px;
+    position: relative; /* Ajoutez cette ligne pour le positionnement relatif */
+}
+
+.add_team a {
+    height: 75px;
+    width: 75px;
+    border-radius: 50%;
+    background: #333333; /* Fond pour le lien */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    position: absolute; /* Positionne le bouton animé au centre du conteneur */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* Centre le bouton */
+}
+
+#container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+}
+
+#button2 {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgb(55, 55, 55); /* Même couleur de fond pour le bouton 2 */
+}
+
+.initial {
+    box-shadow: 0px 12px 12px 0px rgba(0, 0, 0, 0.3),
+                0px -9px 24px 4.5px rgba(255, 255, 255, 0.1);
+}
+
+svg {
+    transform: rotate(-45deg);
+    width: 40%;
+    transition: all 400ms ease-in-out;
+}
+
+svg path {
+    transition: fill 300ms ease-in-out;
+    fill: $green /* Couleur plus claire pour contraster avec le fond sombre */
+}
+

@@ -1,9 +1,12 @@
 <%= render 'shared/navbar' %>
 
 <div id="map-container">
-<div id="map" data-controller="map">
-</div>
-<%= render 'shared/menu_button' %>
+  <div id="map" data-controller="map"></div>
+  <%= render 'shared/menu_button' %>
+  <%= render 'shared/check_modal' %>
+  <%= render 'shared/enigma_modal' %>
+  <%= render 'shared/gallery_modal' %>
+  <%= render 'shared/information_modal' %>
 </div>
 
 <script>
@@ -40,7 +43,7 @@
         return distance <= radius / 111300; // Convertir le rayon en degrés
     }
 
-    // Ajout des cercles pour chaque point GPS
+    // Ajout des cercles et des marqueurs pour chaque point GPS
     var circles = [];
     <% if @markers.present? %>
         <% @markers.each do |marker| %>
@@ -49,20 +52,20 @@
                 color: 'blue',
                 fillColor: '#30f',
                 fillOpacity: 0.5,
-                radius: 50
+                radius: 100
             }).addTo(map);
+            var pin = L.marker([<%= marker.latitude %>, <%= marker.longitude %>]).addTo(map);
             circles.push({circle: circle, enigma: "<%= j marker.enigma %>"});
         <% end %>
     <% end %>
 
     // Geolocation
     function onLocationFound(e) {
-        var radius = e.accuracy;
+        var userRadius = 100; // Définir le rayon du cercle bleu autour de l'utilisateur
 
         L.marker(e.latlng).addTo(map)
-            .bindPopup("You are within " + radius + " meters from this point").openPopup();
 
-        L.circle(e.latlng, radius).addTo(map);
+        L.circle(e.latlng, userRadius).addTo(map);
 
         // Vérifier si l'utilisateur est dans un des cercles
         circles.forEach(function(item) {
@@ -81,10 +84,15 @@
     map.on('locationfound', onLocationFound);
     map.on('locationerror', onLocationError);
 
-    // Simuler la position de l'utilisateur dans un des cercles
-    var simulatedPosition = {lat: <%= @markers.first.latitude %>, lng: <%= @markers.first.longitude %>};
-    map.fire('locationfound', {latlng: simulatedPosition, accuracy: 20});
+    // Activer la géolocalisation avec un zoom plus prononcé
+    map.locate({setView: true, maxZoom: 20});
 
-    // Activer la géolocalisation
-    map.locate({setView: true, maxZoom: 16});
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const recenterButton = document.getElementById('recenter-map');
+
+        recenterButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            map.locate({setView: true, maxZoom: 20});
+        });
+    });
 </script>

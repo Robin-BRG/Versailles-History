@@ -16,11 +16,34 @@ Marker.destroy_all
 Team.destroy_all
 User.destroy_all
 
-# Create Teams
-5.times do
-  Team.create!(
-    name: Faker::Team.name
+# Create Users
+users = 20.times.map do
+  User.create!(
+    email: Faker::Internet.email,
+    password: 'password',  # Use a default password
+    password_confirmation: 'password',  # Ensure password confirmation matches
+    reset_password_token: Faker::Internet.uuid,
+    reset_password_sent_at: Faker::Time.backward(days: 365),
+    remember_created_at: Faker::Time.backward(days: 365),
+    created_at: Faker::Time.backward(days: 365),
+    updated_at: Faker::Time.backward(days: 365),
+    first_name: Faker::Name.first_name,
+    last_name: Faker::Name.last_name,
+    leader: Faker::Boolean.boolean
   )
+end
+
+# Create Teams with captains
+teams = 5.times.map do
+  Team.create!(
+    name: Faker::Team.name,
+    captain: users.sample
+  )
+end
+
+# Assign users to teams
+users.each do |user|
+  user.update!(team: teams.sample)
 end
 
 # Helper method to generate random latitude and longitude within a range
@@ -38,7 +61,7 @@ Marker.create!(
     Je suis un miroir vaste, une étendue liquide, Née du labeur de ceux venus des montagnes humides. Au pied du grand roi, dans un domaine royal, Je reflète châteaux, jardins, et soleil automnal. Conçue pour la beauté et pour la majesté, Par des mains suisses, en un jardin d'été. Je suis calme et sereine, un lieu de promenade, Trouve-moi et contemple la splendeur de l'esplanade. Qui suis-je ?
   ENIGMA
   found: false,
-  radius: Faker::Number.decimal(l_digits: 2, r_digits: 2),
+  radius: 50,  # Set radius to 50 meters
   latitude: 48.799403,
   longitude: 2.112206,
   address: "Versailles, France",
@@ -55,7 +78,7 @@ Marker.create!(
     Dans la ville des rois, où l'histoire est tracée, Se cache un trésor de savoir bien gardé. Entre les pages dorées de siècles passés, Se trouvent les secrets que le temps a laissés. Un palais de lettres et de mots bien rangés, Où les esprits curieux viennent se cultiver. Pas loin du château, mais dans un coin tranquille, Je suis un sanctuaire pour le savoir et l'utile. Qui suis-je ?
   ENIGMA
   found: false,
-  radius: Faker::Number.decimal(l_digits: 2, r_digits: 2),
+  radius: 50,  # Set radius to 50 meters
   latitude: 48.804865,
   longitude: 2.126614,
   address: "Versailles, France",
@@ -72,7 +95,7 @@ Marker.create!(
     Je suis un lieu de rassemblement, moderne et grandiose, Où se rencontrent esprits brillants et paroles précieuses. Dans la ville des rois, mais dédié au présent, Je reçois des foules pour des moments captivants. Événements et discours résonnent sous mon toit, Je suis le carrefour où se mêlent foi et loi. Dans ce centre prestigieux, rencontres et échanges, Qui suis-je ? Viens et découvre ce lieu de mélange. Qui suis-je ?
   ENIGMA
   found: false,
-  radius: Faker::Number.decimal(l_digits: 2, r_digits: 2),
+  radius: 50,  # Set radius to 50 meters
   latitude: 48.8025572,
   longitude: 2.1232462,
   address: "Versailles, France",
@@ -89,7 +112,7 @@ Marker.create!(
     Sous le regard bienveillant du Roi Soleil, Se dresse une maison de prière et de conseil. Construite pour les courtisans, de marbre et de pierre, Elle a vu des siècles de foi et de lumière. Dans la ville des rois, au cœur de la cité, Elle accueille fidèles et âmes à guider. Son nom évoque la Mère du Sauveur, En son sein résonnent les chants du cœur. Qui suis-je ?
   ENIGMA
   found: false,
-  radius: Faker::Number.decimal(l_digits: 2, r_digits: 2),
+  radius: 50,  # Set radius to 50 meters
   latitude: 48.807072,
   longitude: 2.125209,
   address: "Versailles, France",
@@ -106,7 +129,7 @@ Marker.create!(
     Au cœur de la ville où le roi autrefois régnait, Un lieu animé de couleurs et d'odeurs variées. Chaque matin, sous les toiles tendues, Se rencontrent les marchands et les gens de la rue. Des légumes frais, des fruits, des épices, Du fromage, des fleurs, et mille délices. Depuis des siècles, c'est ici qu'on se retrouve, Pour échanger, pour parler, et pour que la vie s'éprouve. Qui suis-je ?
   ENIGMA
   found: false,
-  radius: Faker::Number.decimal(l_digits: 2, r_digits: 2),
+  radius: 50,  # Set radius to 50 meters
   latitude: 48.806337,
   longitude: 2.13107,
   address: "Versailles, France",
@@ -123,7 +146,7 @@ Marker.create!(
     Dans la ville du roi où l'histoire se raconte, Une rue animée où la vie s'enchante. Là où restaurants et boutiques se côtoient, Un lieu de promenade pour les passants de bonne foi. Entre les pavés, des rires et des saveurs, Un quartier vivant, vibrant de mille couleurs. À deux pas du château, mais moderne et léger, Je suis une artère où l'on aime flâner. Qui suis-je ?
   ENIGMA
   found: false,
-  radius: Faker::Number.decimal(l_digits: 2, r_digits: 2),
+  radius: 50,  # Set radius to 50 meters
   latitude: 48.79996,
   longitude: 2.124629,
   address: "Versailles, France",
@@ -140,7 +163,7 @@ Marker.create!(
     Dans la ville royale où Louis fit son trône, Se dresse un édifice, majestueux, en pierre et en faïence. Consacrée au Roi des cieux, sous un patron sacré, Elle voit les fidèles venir prier en paix. Des vitraux colorés illuminent son intérieur, Et son orgue puissant résonne en splendeur. Ce lieu sacré au cœur de la cité, Accueille messes et prières depuis des années. Qui suis-je ?
   ENIGMA
   found: false,
-  radius: Faker::Number.decimal(l_digits: 2, r_digits: 2),
+  radius: 50,  # Set radius to 50 meters
   latitude: 48.7982,
   longitude: 2.12427,
   address: "Versailles, France",
@@ -155,31 +178,13 @@ Marker.create!(
   CONTENT
   enigma: "",
   found: false,
-  radius: Faker::Number.decimal(l_digits: 2, r_digits: 2),
+  radius: 50,  # Set radius to 50 meters
   latitude: 48.8018438,
   longitude: 2.1288123,
   address: "Versailles, France",
   created_at: Time.now,
   updated_at: Time.now
 )
-
-# Create Users
-20.times do
-  User.create!(
-    email: Faker::Internet.email,
-    password: 'password',  # Use a default password
-    password_confirmation: 'password',  # Ensure password confirmation matches
-    reset_password_token: Faker::Internet.uuid,
-    reset_password_sent_at: Faker::Time.backward(days: 365),
-    remember_created_at: Faker::Time.backward(days: 365),
-    created_at: Faker::Time.backward(days: 365),
-    updated_at: Faker::Time.backward(days: 365),
-    first_name: Faker::Name.first_name,
-    last_name: Faker::Name.last_name,
-    team_id: Team.pluck(:id).sample,
-    leader: Faker::Boolean.boolean
-  )
-end
 
 # Create TeamMarkers
 50.times do
