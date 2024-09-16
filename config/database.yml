@@ -79,8 +79,7 @@ test:
 #
 production:
   <<: *default
-    url: <%= ENV['DATABASE_URL'] %>
-
+  url: <%= ENV['DATABASE_URL'] %>
   database: versailles_history_production
   username: versailles_history
   password: <%= ENV["VERSAILLES_HISTORY_DATABASE_PASSWORD"] %>
