@@ -3,10 +3,10 @@ class PagesController < ApplicationController
 
   def home
   end
-  
-  def map
-    @markers = Marker.all
-  end
+
+  # def map
+  #   @markers = Marker.all
+  # end
 
   def team
     @teams = Team.all
