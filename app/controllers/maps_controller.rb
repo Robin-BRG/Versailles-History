@@ -3,11 +3,12 @@ class MapsController < ApplicationController
     @markers = Marker.all
   end
 
-  def next_team_marker(team_id)
+  def next_team_marker
+    team_id = params[:team_id] # TODO ajouter un contrôle de présence du paramètre team_id
     # Marker de test
     @next_team_marker = {
-      latitude: 48.8049,
-      longitude: 2.1204,
+      marker_coordinates: [48.8049, 2.1204],
+      circle_coordinates: [48.8049, 2.1204],
       enigma: "Quelle est la capitale de la France ?"
     }
 
