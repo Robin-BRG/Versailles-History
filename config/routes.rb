@@ -12,4 +12,6 @@ Rails.application.routes.draw do
   # get 'map', to: 'pages#map'
   get 'map', to: 'maps#show'
   get 'team', to: 'pages#team'
+
+  # get 'next_team_marker', to: 'maps#next_team_marker'
 end
