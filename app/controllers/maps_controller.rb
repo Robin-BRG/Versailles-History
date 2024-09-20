@@ -1,13 +1,15 @@
 class MapsController < ApplicationController
+  skip_before_action :authenticate_user!, only: [:show, :next_team_marker]
   def show
     @markers = Marker.all
   end
 
   def next_team_marker
-    team_id = params[:team_id] # TODO ajouter un contrôle de présence du paramètre team_id
+    # team_id = params[:team_id] # Récupération du paramètre team_id
+    # TODO ajouter un contrôle de présence du paramètre team_id
     # Marker de test
     @next_team_marker = {
-      marker_coordinates: [48.8049, 2.1204],
+      marker_coordinates: [48.804865, 2.126614],
       circle_coordinates: [48.8049, 2.1204],
       enigma: "Quelle est la capitale de la France ?"
     }
