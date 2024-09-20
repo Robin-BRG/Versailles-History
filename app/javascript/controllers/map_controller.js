@@ -8,6 +8,7 @@ export default class extends Controller {
     const teamId = 1; // TODO: Récupérer l'id de l'équipe pour le pousser à l'API
     this.displayMap();
     this.fetchNextTeamMarker(teamId)
+    this.getLocation();
 
     // Exemple de marqueur pour les tests
     L.marker([48.8049, 2.1204]).addTo(this.map)
@@ -50,5 +51,33 @@ export default class extends Controller {
         this.displayMarker(nextTeamMarker,nextTeamMarkerMessage);
       });
   }
+
+  // créer une fonction pour afficher un marqueur de géolocalisation de l'utilisateur
+
+
+
+
+  getLocation() {
+    if (navigator.geolocation) {
+      this.watchId = navigator.geolocation.watchPosition(
+        (position) => this.showPosition(position), // Utilise une fonction fléchée pour maintenir le contexte
+        (error) => this.handleError(error) // Utilise une fonction fléchée pour maintenir le contexte
+      );
+    } else {
+      console.error("Geolocation is not supported by this browser.");
+    }
+  }
+
+  showPosition(position) {
+    const { latitude, longitude } = position.coords;
+    this.displayMarker([latitude, longitude], "Votre position actuelle");
+    console.log(`Latitude: ${latitude}, Longitude: ${longitude}`);
+  }
+
+  handleError(error) {
+    console.error(`Error occurred: ${error.message}`);
+  }
+
+  // créer une fonction pour recentrer la map sur la position de l'utilisateur
 
 }
