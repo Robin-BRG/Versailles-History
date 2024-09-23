@@ -16,7 +16,7 @@ class MapsController < ApplicationController
 
     # cette requete devrait retourner le prochain marker non visité de l'équipe
     # @next_team_marker = TeamMarker.joins(:marker) # Jointure avec la table 'markers'
-    #                               .select('marker.latitude, marker.longitude, marker.enigma') # Sélection des champs souhaités de 'markers'
+    #                               .select('marker.latitude, marker.longitude, marker.enigma, marker.circle_center_latitude, marker.circle_center_longitude') # Sélection des champs souhaités de 'markers'
     #                               .where(team_id: team_id, visited: false) # Conditions sur le team_id et le statut visited
     #                               .order(:order) # Trier par le champ 'order'
     #                               .first
