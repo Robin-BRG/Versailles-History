@@ -221,6 +221,11 @@ Team.create!(
   captain: User.find_by(email: "john.doe@example.com")
 )
 
+# Assign team to user
+user = User.find_by(email: "john.doe@example.com")
+team = Team.find_by(name: "Green Drink")
+user.update!(team:)
+
 Marker.all.each do |marker|
   if Marker.all.index(marker) <= 4 # Les 4 premiers marqueurs sont visités
     visited = true
