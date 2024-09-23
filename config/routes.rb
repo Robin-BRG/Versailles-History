@@ -12,7 +12,7 @@ Rails.application.routes.draw do
   # get 'map', to: 'pages#map'
   get 'map', to: 'maps#show'
   get 'team', to: 'pages#team'
-  post 'map/next_team_marker', to: 'maps#next_team_marker' # POST request to get the next team marker
+  get 'map/next_team_marker', to: 'maps#next_team_marker' # POST request to get the next team marker
   get 'map/visited_team_markers', to: 'maps#visited_team_markers' # GET request to get the visited team markers
 
   # get 'next_team_marker', to: 'maps#next_team_marker'

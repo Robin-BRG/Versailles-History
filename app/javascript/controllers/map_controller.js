@@ -37,7 +37,7 @@ export default class extends Controller {
   // fonction pour récupérer le prochain point à visiter
   async fetchNextTeamMarker() {
     fetch('map/next_team_marker', {
-      method: 'POST',
+      method: 'GET',
       headers: {
         'Content-Type': 'application/json',
         "X-CSRF-Token": document.querySelector('meta[name="csrf-token"]').getAttribute('content')
