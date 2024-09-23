@@ -5,16 +5,16 @@ export default class extends Controller {
 
   connect() {
     console.log("Map connected")
-    const teamId = 1; // TODO: Récupérer l'id de l'équipe pour le pousser à l'API
     this.displayMap();
-    this.fetchNextTeamMarker(teamId)
+    this.fetchVisitedTeamMarkers()
+    this.fetchNextTeamMarker()
     // this.getLocation(); // Géolocalisation désactivée pour le moment
 
 
-    // Exemple de marqueur pour les tests
-    L.marker([48.8049, 2.1204]).addTo(this.map)
-    .bindPopup('Un point d\'exemple.')
-    .openPopup();
+    // // Exemple de marqueur pour les tests
+    // L.marker([48.8049, 2.1204]).addTo(this.map)
+    // .bindPopup('Un point d\'exemple.')
+    // .openPopup();
 
   }
   // fonction pour afficher la map avec un centrage sur Versailles
@@ -35,14 +35,13 @@ export default class extends Controller {
   }
 
   // fonction pour récupérer le prochain point à visiter
-  async fetchNextTeamMarker(teamId) {
+  async fetchNextTeamMarker() {
     fetch('map/next_team_marker', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         "X-CSRF-Token": document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-      },
-      body: JSON.stringify({ team_id: teamId }) // Envoie team_id dans le body
+      }
     })
       .then(response => response.json())
       .then(data => {
@@ -50,13 +49,31 @@ export default class extends Controller {
         const nextTeamMarker = data.next_team_marker.marker_coordinates;
         const nextTeamMarkerMessage = data.next_team_marker.enigma;
         this.displayMarker(nextTeamMarker,nextTeamMarkerMessage);
+        console.log(data)
       });
   }
 
-  // créer une fonction pour afficher un marqueur de géolocalisation de l'utilisateur
+  // affichage des marqueurs déjà visités par l'équipe
+  async fetchVisitedTeamMarkers() {
+    fetch('map/visited_team_markers', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        "X-CSRF-Token": document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+      }
+    })
+      .then(response => response.json())
+      .then(data => {
+        // Traite les données des points déjà visités par l'équipe
+        const visitedTeamMarkers = data.visited_team_markers;
+        visitedTeamMarkers.forEach((visitedTeamMarker) => {
+          this.displayMarker(visitedTeamMarker.marker_coordinates,visitedTeamMarker.enigma);
+        });
+      })
 
+  }
 
-
+  // fonction pour afficher un marqueur de géolocalisation de l'utilisateur
   getLocation() {
     if (navigator.geolocation) {
       this.watchId = navigator.geolocation.watchPosition(

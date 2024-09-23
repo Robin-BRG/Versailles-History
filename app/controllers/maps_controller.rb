@@ -19,4 +19,18 @@ class MapsController < ApplicationController
 
     render json: { next_team_marker: @next_team_marker_data }
   end
+
+  def visited_team_markers
+    visited_team_markers = TeamMarker.where(team_id: current_user.team_id, visited: true).order(:order)
+    visited_markers_data = visited_team_markers.map do |team_marker|
+      marker = Marker.find(team_marker.marker_id)
+      {
+        marker_coordinates: [marker.latitude, marker.longitude],
+        # circle_coordinates: [team_marker.circle_center_latitude, team_marker.circle_center_longitude],
+        # enigma: marker.enigma
+      }
+    end
+    render json: { visited_team_markers: visited_markers_data }
+  end
+
 end
