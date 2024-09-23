@@ -11,47 +11,16 @@
 require 'faker'
 
 # Clear existing data in the correct order to avoid foreign key violations
+puts "Clearing existing data..."
 TeamMarker.destroy_all
 Marker.destroy_all
 Team.destroy_all
 User.destroy_all
+puts "Existing data cleared!"
 
-# Create Users
-users = 20.times.map do
-  User.create!(
-    email: Faker::Internet.email,
-    password: 'password',  # Use a default password
-    password_confirmation: 'password',  # Ensure password confirmation matches
-    reset_password_token: Faker::Internet.uuid,
-    reset_password_sent_at: Faker::Time.backward(days: 365),
-    remember_created_at: Faker::Time.backward(days: 365),
-    created_at: Faker::Time.backward(days: 365),
-    updated_at: Faker::Time.backward(days: 365),
-    first_name: Faker::Name.first_name,
-    last_name: Faker::Name.last_name,
-    leader: Faker::Boolean.boolean
-  )
-end
-
-# Create Teams with captains
-teams = 5.times.map do
-  Team.create!(
-    name: Faker::Team.name,
-    captain: users.sample
-  )
-end
-
-# Assign users to teams
-users.each do |user|
-  user.update!(team: teams.sample)
-end
-
-# Helper method to generate random latitude and longitude within a range
-def random_in_range(min, max)
-  (rand * (max - min)) + min
-end
 
 # Create Markers in Versailles
+puts "Creating markers..."
 Marker.create!(
   name: "Pièce d'eau des suisses",
   content: <<~CONTENT,
@@ -176,7 +145,7 @@ Marker.create!(
   content: <<~CONTENT,
     Bravo ! Joséphine te félicite pour ta réussite face à cette chasse aux trésors. Toute l'équipe green drink t'invite à reprendre des forces ainsi qu'à discuter au sujet de cette expérience à l'hôtel Le Louis.
   CONTENT
-  enigma: "",
+  enigma: "Hôtel Le Louis", # No enigma for the final marker
   found: false,
   radius: 50,  # Set radius to 50 meters
   latitude: 48.8018438,
@@ -186,13 +155,86 @@ Marker.create!(
   updated_at: Time.now
 )
 
-# Create TeamMarkers
-50.times do
+puts "Markers created!"
+
+
+## Create Users
+# puts "Creating random users..."
+# users = 20.times.map do
+#   User.create!(
+#     email: Faker::Internet.email,
+#     password: 'password',  # Use a default password
+#     password_confirmation: 'password',  # Ensure password confirmation matches
+#     reset_password_token: Faker::Internet.uuid,
+#     reset_password_sent_at: Faker::Time.backward(days: 365),
+#     remember_created_at: Faker::Time.backward(days: 365),
+#     created_at: Faker::Time.backward(days: 365),
+#     updated_at: Faker::Time.backward(days: 365),
+#     first_name: Faker::Name.first_name,
+#     last_name: Faker::Name.last_name,
+#     leader: Faker::Boolean.boolean
+#   )
+# end
+
+## Create Teams with captains
+# puts "Creating random teams..."
+# teams = 5.times.map do
+#   Team.create!(
+#     name: Faker::Team.name,
+#     captain: users.sample
+#   )
+# end
+
+## Assign users to teams
+# users.each do |user|
+#   user.update!(team: teams.sample)
+# end
+
+## Helper method to generate random latitude and longitude within a range
+def random_in_range(min, max)
+  (rand * (max - min)) + min
+end
+
+## Create TeamMarkers
+# 50.times do
+#   TeamMarker.create!(
+#     team_id: Team.pluck(:id).sample,
+#     marker_id: Marker.pluck(:id).sample,
+#     created_at: Faker::Time.backward(days: 365),
+#     updated_at: Faker::Time.backward(days: 365)
+#   )
+# end
+
+
+#  Specific seed
+puts "Creating specific users and teams..."
+User.create!(
+  email: "john.doe@example.com",
+  password: 'password', # Use a default password
+  password_confirmation: 'password', # Ensure password confirmation matches
+  first_name: "John",
+  last_name: "Doe"
+)
+
+Team.create!(
+  name: "Green Drink",
+  captain: User.find_by(email: "john.doe@example.com")
+)
+
+Marker.all.each do |marker|
+  if Marker.all.index(marker) <= 4 # Les 4 premiers marqueurs sont visités
+    visited = true
+  else
+    visited = false
+  end
+
   TeamMarker.create!(
-    team_id: Team.pluck(:id).sample,
-    marker_id: Marker.pluck(:id).sample,
-    created_at: Faker::Time.backward(days: 365),
-    updated_at: Faker::Time.backward(days: 365)
+    team_id: Team.find_by(name: "Green Drink").id,
+    marker_id: marker.id,
+    order: Marker.all.index(marker),
+    visited:,
+    circle_center_latitude: random_in_range(marker.latitude - 0.001, marker.latitude + 0.001),
+    circle_center_longitude: random_in_range(marker.longitude - 0.001, marker.longitude + 0.001),
   )
 end
 
