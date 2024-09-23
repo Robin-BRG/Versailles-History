@@ -1,12 +1,10 @@
-<h1>Maps#show</h1>
-<p>Find me in app/views/maps/show.html.erb</p>
+
+<%= render 'shared/navbar' %>
 <div id="map-container">
-<div id="map" data-controller="map" data-map-target="map"></div>
+  <div id="map" data-controller="map" data-map-target="map"></div>
   <%= render 'shared/menu_button' %>
   <%= render 'shared/check_modal' %>
   <%= render 'shared/enigma_modal' %>
   <%= render 'shared/gallery_modal' %>
   <%= render 'shared/information_modal' %>
 </div>
-
-
