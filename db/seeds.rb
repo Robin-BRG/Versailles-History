@@ -48,7 +48,7 @@ end
 
 # Helper method to generate random latitude and longitude within a range
 def random_in_range(min, max)
-  rand * (max - min) + min
+  (rand * (max - min)) + min
 end
 
 # Create Markers in Versailles

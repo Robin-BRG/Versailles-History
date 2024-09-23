@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_09_06_192245) do
+ActiveRecord::Schema[7.1].define(version: 2024_09_23_100405) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -32,6 +32,10 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_06_192245) do
     t.bigint "marker_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "order"
+    t.boolean "visited"
+    t.float "circle_center_latitude"
+    t.float "circle_center_longitude"
     t.index ["marker_id"], name: "index_team_markers_on_marker_id"
     t.index ["team_id"], name: "index_team_markers_on_team_id"
   end
