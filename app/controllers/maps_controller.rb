@@ -26,6 +26,7 @@ class MapsController < ApplicationController
       marker = Marker.find(team_marker.marker_id)
       {
         marker_coordinates: [marker.latitude, marker.longitude],
+        name: marker.name
         # circle_coordinates: [team_marker.circle_center_latitude, team_marker.circle_center_longitude],
         # enigma: marker.enigma
       }
