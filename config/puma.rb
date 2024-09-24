@@ -28,8 +28,20 @@ port ENV.fetch("PORT") { 3000 }
 # Specifies the `environment` that Puma will run in.
 environment ENV.fetch("RAILS_ENV") { "development" }
 
+# Bind on a specific address and port with SSL
+
+
 # Specifies the `pidfile` that Puma will use.
 pidfile ENV.fetch("PIDFILE") { "tmp/pids/server.pid" }
 
 # Allow puma to be restarted by `bin/rails restart` command.
 plugin :tmp_restart
+
+
+
+# SSL configuration for local development on port 3001
+ssl_bind '127.0.0.1', '3001', {
+  key: "config/ssl/localhost.key",
+  cert: "config/ssl/localhost.crt",
+  verify_mode: "none"
+}

@@ -2,17 +2,53 @@
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="InformationModalLabel">Modal title</h1>
+          <h1 class="modal-title fs-5" id="InformationModalLabel">Information</h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          ...
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary">Save changes</button>
+          <h5><strong>Contact sur place</strong></h5>
+          <span>Romane FARIN</span>
+          <br>
+          <i class="fa-solid fa-phone"></i> <span id="phone-number">06 62 62 62 62</span>
+          <br>
+          <br>
+          <span>Romane FARIN</span>
+          <br>
+          <i class="fa-solid fa-phone"></i> <span id="phone-number">06 62 62 62 62</span>
+          <br>
+          <br>
+          <h5><strong>Développeur</strong></h5>
+          <span>Robin BORG</span>
+          <br>
+          <i class="fa-brands fa-linkedin"></i> <a href="https://www.linkedin.com/in/quentin-giani-900000200/" target="_blank">LinkedIn</a>
+          <br>
+          <i class="fa-brands fa-github"></i> <a href="https://www.linkedin.com/in/quentin-giani-900000200/" target="_blank">GitHub</a>
+          </p>
+          <br>
+          <span>Bastien PENARD</span>
+          <br>
+          <i class="fa-brands fa-linkedin"></i> <a href="https://www.linkedin.com/in/quentin-giani-900000200/" target="_blank">LinkedIn</a>
+          <br>
+          <i class="fa-brands fa-github"></i> <a href="https://www.linkedin.com/in/quentin-giani-900000200/" target="_blank">GitHub</a>
+          </p>
+          <br>
+          <span>Romain CHAVALLE</span>
+          <br>
+          <i class="fa-brands fa-linkedin"></i> <a href="https://www.linkedin.com/in/quentin-giani-900000200/" target="_blank">LinkedIn</a>
+          <br>
+          <i class="fa-brands fa-github"></i> <a href="https://www.linkedin.com/in/quentin-giani-900000200/" target="_blank">GitHub</a>
+          </p>
         </div>
       </div>
     </div>
   </div>
-  
+<script>
+  document.getElementById('phone-number').addEventListener('click', function() {
+    const phoneNumber = this.textContent;
+    navigator.clipboard.writeText(phoneNumber).then(function() {
+      alert('Numéro de téléphone copié dans le presse-papier');
+    }, function(err) {
+      console.error('Erreur lors de la copie du texte : ', err);
+    });
+  });
+</script>
