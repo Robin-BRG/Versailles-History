@@ -15,7 +15,7 @@ class MapsController < ApplicationController
       marker_coordinates: [next_marker.latitude, next_marker.longitude],
       circle_coordinates: [next_team_marker.circle_center_latitude, next_team_marker.circle_center_longitude],
       enigma: next_marker.enigma
-      }
+    }
 
     render json: { next_team_marker: @next_team_marker_data }
   end
@@ -32,5 +32,6 @@ class MapsController < ApplicationController
     end
     render json: { visited_team_markers: visited_markers_data }
   end
+
 
 end

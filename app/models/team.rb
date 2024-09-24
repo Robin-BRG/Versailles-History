@@ -4,4 +4,13 @@ class Team < ApplicationRecord
   has_many :team_markers
 
   validates :name, presence: true
+  validate :single_team_per_user
+
+  private
+
+  def single_team_per_user
+    if captain && captain.team.present?
+      errors.add(:base, "Vous ne pouvez créer qu'une seule équipe.")
+    end
+  end
 end
