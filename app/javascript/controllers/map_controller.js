@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = [ "map" ]
+  static targets = [ "map", "enigmaModal" ]
 
   connect() {
     console.log("Map connected")
@@ -30,8 +30,8 @@ export default class extends Controller {
   displayMarker(markerCoordinates,nextTeamMarkerMessage) {
     const L = window.L;
     L.marker(markerCoordinates).addTo(this.map)
-    .bindPopup(nextTeamMarkerMessage) // si on veut ajouter un popup il faudra le passer en paramètre
-    .openPopup();
+    .bindPopup(nextTeamMarkerMessage)
+    // .openPopup(); // Popup fermé par défaut
   }
 
   // fonction pour récupérer le prochain point à visiter
@@ -48,8 +48,9 @@ export default class extends Controller {
         // Traite les données du prochain point à visiter
         const nextTeamMarker = data.next_team_marker.marker_coordinates;
         const nextTeamMarkerMessage = data.next_team_marker.enigma;
-        this.displayMarker(nextTeamMarker,nextTeamMarkerMessage);
-        console.log(data)
+        // this.displayMarker(nextTeamMarker,nextTeamMarkerMessage); // le marqueur n'est pas affiché sur la map
+        this.enigmaModalTarget.innerText = nextTeamMarkerMessage; // Affiche l'énigme dans le modal
+
       });
   }
 
@@ -67,7 +68,8 @@ export default class extends Controller {
         // Traite les données des points déjà visités par l'équipe
         const visitedTeamMarkers = data.visited_team_markers;
         visitedTeamMarkers.forEach((visitedTeamMarker) => {
-          this.displayMarker(visitedTeamMarker.marker_coordinates,visitedTeamMarker.enigma);
+          this.displayMarker(visitedTeamMarker.marker_coordinates,visitedTeamMarker.name);
+          console.log(visitedTeamMarker)
         });
       })
 
