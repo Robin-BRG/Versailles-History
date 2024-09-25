@@ -12,22 +12,23 @@ export default class extends Controller {
 
 
     // Exemple de marqueur pour les tests
-    L.marker([48.8049, 2.1204]).addTo(this.map)
-    .bindPopup('Un point d\'exemple.')
-    .openPopup();
-    L.circle([48.8049, 2.1204], {
-      radius: 2000,
-      color: 'red', // Couleur du contour du cercle
-      fillColor: '#f03', // Couleur de remplissage
-      fillOpacity: 0.5,
-      zIndexOffset: 9999 // Ajuste ce z-index pour que le cercle soit au-dessus
-    }).addTo(this.map);
+    // L.marker([48.8049, 2.1204]).addTo(this.map)
+    // .bindPopup('Un point d\'exemple.')
+    // .openPopup();
+
+    // L.circle([48.8049, 2.1204], {
+    //   radius: 2000,
+    //   color: 'red', // Couleur du contour du cercle
+    //   fillColor: '#f03', // Couleur de remplissage
+    //   fillOpacity: 0.5,
+    //   zIndexOffset: 9999 // Ajuste ce z-index pour que le cercle soit au-dessus
+    // }).addTo(this.map);
 
   }
   // fonction pour afficher la map avec un centrage sur Versailles
   displayMap() {
     const L = window.L;
-    this.map = L.map(this.mapTarget).setView([48.8049, 2.1204], 14);
+    this.map = L.map(this.mapTarget).setView([48.8049, 2.1204], 17); // TODO : ici on devrait centrer la map sur la position de l'utilisateur
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(this.map);
@@ -57,6 +58,11 @@ export default class extends Controller {
         const nextTeamMarkerMessage = data.next_team_marker.enigma;
         // this.displayMarker(nextTeamMarker,nextTeamMarkerMessage); // le marqueur n'est pas affiché sur la map
         this.enigmaModalTarget.innerText = nextTeamMarkerMessage; // Affiche l'énigme dans le modal
+
+        L.circle(nextTeamMarker, {
+          radius: 50,
+          className: 'leaflet-circle-custom'
+        }).addTo(this.map);
 
       });
   }

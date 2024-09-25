@@ -10,3 +10,9 @@
     // border: solid 1px red;
     // z-index: 1000; /* Ajustez selon vos besoins */
 }
+
+.leaflet-circle-custom {
+  fill: rgb(0, 51, 255);
+  stroke: transparent;
+  fill-opacity: 0.5;
+}
