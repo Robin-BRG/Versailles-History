@@ -11,10 +11,17 @@ export default class extends Controller {
     // this.getLocation(); // Géolocalisation désactivée pour le moment
 
 
-    // // Exemple de marqueur pour les tests
-    // L.marker([48.8049, 2.1204]).addTo(this.map)
-    // .bindPopup('Un point d\'exemple.')
-    // .openPopup();
+    // Exemple de marqueur pour les tests
+    L.marker([48.8049, 2.1204]).addTo(this.map)
+    .bindPopup('Un point d\'exemple.')
+    .openPopup();
+    L.circle([48.8049, 2.1204], {
+      radius: 2000,
+      color: 'red', // Couleur du contour du cercle
+      fillColor: '#f03', // Couleur de remplissage
+      fillOpacity: 0.5,
+      zIndexOffset: 9999 // Ajuste ce z-index pour que le cercle soit au-dessus
+    }).addTo(this.map);
 
   }
   // fonction pour afficher la map avec un centrage sur Versailles
