@@ -5,10 +5,23 @@ export default class extends Controller {
 
   connect() {
     console.log("Map connected")
-    this.displayMap();
-    this.fetchVisitedTeamMarkers()
-    this.fetchNextTeamMarker()
-    this.getLocation(); // Géolocalisation désactivée pour le moment
+    this.displayMap(); // affichage de la map
+
+    // Affichage des marqueurs déjà visités par l'équipe
+    // this.fetchVisitedTeamMarkers() // pour l'instant on affiche pas ces marqueurs
+
+    // Récupère et affiche la position de l'utilisateur
+
+    // Récupère le prochain point à visiter
+    this.fetchNextTeamMarker().then(nextPoint => {
+      if (nextPoint) {
+        // Stocker la position du prochain point
+        this.nextPoint = nextPoint;
+        console.log(nextPoint)
+        ; // Une méthode pour calculer la distance à ce point
+      }
+    });
+    this.getLocation();
 
 
 
@@ -30,7 +43,8 @@ export default class extends Controller {
   // fonction pour afficher la map avec un centrage sur Versailles
   displayMap() {
     const L = window.L;
-    this.map = L.map(this.mapTarget).setView([48.8049, 2.1204], 17); // TODO : ici on devrait centrer la map sur la position de l'utilisateur
+    // La position de Versailles est [48.8049, 2.1204], 17, j'ai modifié avec la mienne pour les tests
+    this.map = L.map(this.mapTarget).setView([48.8701952, 2.3855104], 13); // TODO : ici on devrait centrer la map sur la position de l'utilisateur
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(this.map);
@@ -46,27 +60,38 @@ export default class extends Controller {
 
   // fonction pour récupérer le prochain point à visiter
   async fetchNextTeamMarker() {
-    fetch('map/next_team_marker', {
+try {
+  const response = await fetch('map/next_team_marker', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
         "X-CSRF-Token": document.querySelector('meta[name="csrf-token"]').getAttribute('content')
       }
     })
-      .then(response => response.json())
-      .then(data => {
-        // Traite les données du prochain point à visiter
-        const nextTeamMarker = data.next_team_marker.marker_coordinates;
-        const nextTeamMarkerMessage = data.next_team_marker.enigma;
-        // this.displayMarker(nextTeamMarker,nextTeamMarkerMessage); // le marqueur n'est pas affiché sur la map
-        this.enigmaModalTarget.innerText = nextTeamMarkerMessage; // Affiche l'énigme dans le modal
 
-        L.circle(nextTeamMarker, {
-          radius: 50,
-          className: 'leaflet-circle-custom'
-        }).addTo(this.map);
+    if (!response.ok) {
+      throw new Error("Failed to fetch next team marker.");
+    }
+    const data = await response.json();
+    // Traite les données du prochain point à visiter
+    const nextTeamMarker = data.next_team_marker.marker_coordinates;
+    const nextTeamMarkerMessage = data.next_team_marker.enigma;
 
-      });
+    // Affiche l'énigme dans la modal
+    this.enigmaModalTarget.innerText = nextTeamMarkerMessage;
+
+    L.circle(nextTeamMarker, {
+      radius: 50,
+      className: 'leaflet-circle-custom'
+    }).addTo(this.map);
+
+    // console.log(nextTeamMarker);
+    return nextTeamMarker;
+
+  } catch (error) {
+    console.error('Error fetching the next team marker:', error);
+    return null; // En cas d'erreur, retourne null ou une autre valeur par défaut
+  }
   }
 
   // affichage des marqueurs déjà visités par l'équipe
@@ -114,7 +139,10 @@ export default class extends Controller {
     } else {
       this.userMarker.setLatLng([latitude, longitude]); // Mise à jour de la position
     }
-    console.log(`Latitude: ${latitude}, Longitude: ${longitude}`);
+    if (this.nextPoint) { // Si on ne connait pas encore le prochain point, on ne peut pas calculer la distance
+      this.calculateDistanceToNextPoint(latitude,longitude)
+    }
+    // console.log(`Latitude: ${latitude}, Longitude: ${longitude}`);
   }
 
   getUserLocationIcon() {
@@ -130,8 +158,20 @@ export default class extends Controller {
   }
 
 
+// Méthode pour calculer la distance entre l'utilisateur et le prochain point
+calculateDistanceToNextPoint(userLat, userLng) {
+  const nextPointLat = this.nextPoint[0]; // Récupère les coordonnées du prochain point
+  const nextPointLng = this.nextPoint[1];
 
+  // Utilise la méthode distance de Leaflet pour calculer la distance en mètres
+  const distance = L.latLng(userLat, userLng).distanceTo(L.latLng(nextPointLat, nextPointLng));
 
+  // Afficher la distance en console ou l'afficher dans le DOM
+  console.log(`Distance to next point: ${Math.round(distance)} meters`);
+
+  // Optionnel : Mets à jour une valeur dans ton UI pour afficher la distance
+  document.getElementById('distanceToNextPoint').innerText = `Next point: ${Math.round(distance)} m`;
+}
 
 
 
