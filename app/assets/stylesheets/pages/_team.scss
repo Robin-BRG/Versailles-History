@@ -101,13 +101,13 @@
                 0px -9px 24px 4.5px rgba(255, 255, 255, 0.1);
 }
 
-svg {
-    transform: rotate(-45deg);
-    // width: 40%; // cette ligne empêche le cercle de s'afficher
-    transition: all 400ms ease-in-out;
-}
+// svg {
+//     transform: rotate(-45deg);
+//     // width: 40%; // cette ligne empêche le cercle de s'afficher
+//     transition: all 400ms ease-in-out;
+// }
 
-svg path {
-    transition: fill 300ms ease-in-out;
-    fill: $green /* Couleur plus claire pour contraster avec le fond sombre */
-}
+// svg path {
+//     transition: fill 300ms ease-in-out;
+//     // fill: $green /* Couleur plus claire pour contraster avec le fond sombre */
+// }

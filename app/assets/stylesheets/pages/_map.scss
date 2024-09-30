@@ -10,3 +10,20 @@
     // border: solid 1px red;
     // z-index: 1000; /* Ajustez selon vos besoins */
 }
+
+.leaflet-circle-custom {
+  fill: rgb(0, 51, 255);
+  stroke: transparent;
+  fill-opacity: 0.5;
+}
+
+.user-location-icon {
+  width: 30px;
+  height: 30px;
+  background-color: #3498db;
+  border-radius: 50%;
+  border: 3.5px solid white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

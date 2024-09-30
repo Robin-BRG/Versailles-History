@@ -1,33 +1,53 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = [ "map", "enigmaModal" ]
+  static targets = [ "map", "enigmaModal", "recenterButton" ]
 
   connect() {
     console.log("Map connected")
-    this.displayMap();
-    this.fetchVisitedTeamMarkers()
-    this.fetchNextTeamMarker()
-    // this.getLocation(); // Géolocalisation désactivée pour le moment
+    this.displayMap(); // affichage de la map
+
+    // Affichage des marqueurs déjà visités par l'équipe
+    this.fetchVisitedTeamMarkers() // pour l'instant on affiche pas ces marqueurs
+
+    // Récupère et affiche la position de l'utilisateur
+    this.getLocation();
+
+    // Récupère le prochain point à visiter
+    this.fetchNextTeamMarker().then(nextPoint => {
+      if (nextPoint) {
+        // Stocker la position du prochain point
+        this.nextPoint = nextPoint;
+        // console.log(nextPoint)
+      }
+    });
+
+
+    // Ecouteur pour le bouton de recentrage
+
+    // recenterButton.addEventListener('click', () => console.log('Recenter map'));
 
 
     // Exemple de marqueur pour les tests
-    L.marker([48.8049, 2.1204]).addTo(this.map)
-    .bindPopup('Un point d\'exemple.')
-    .openPopup();
-    L.circle([48.8049, 2.1204], {
-      radius: 2000,
-      color: 'red', // Couleur du contour du cercle
-      fillColor: '#f03', // Couleur de remplissage
-      fillOpacity: 0.5,
-      zIndexOffset: 9999 // Ajuste ce z-index pour que le cercle soit au-dessus
-    }).addTo(this.map);
+    // L.marker([48.8049, 2.1204]).addTo(this.map)
+    // .bindPopup('Un point d\'exemple.')
+    // .openPopup();
+
+    // L.circle([48.7982, 2.12427], {
+    //   radius: 50,
+    //   color: 'red', // Couleur du contour du cercle
+    //   fillColor: '#f03', // Couleur de remplissage
+    //   fillOpacity: 0.5,
+    // }).addTo(this.map);
 
   }
   // fonction pour afficher la map avec un centrage sur Versailles
   displayMap() {
     const L = window.L;
-    this.map = L.map(this.mapTarget).setView([48.8049, 2.1204], 14);
+    // La position de Nation est [48.8701952, 2.3855104], 13
+    //Next Point 48.7982, 2.12427
+    // La position de Versailles est [48.8049, 2.1204], 17, j'ai modifié avec la mienne pour les tests
+    this.map = L.map(this.mapTarget).setView([48.8049, 2.1204], 15); // TODO : ici on devrait centrer la map sur la position de l'utilisateur
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(this.map);
@@ -43,22 +63,42 @@ export default class extends Controller {
 
   // fonction pour récupérer le prochain point à visiter
   async fetchNextTeamMarker() {
-    fetch('map/next_team_marker', {
+try {
+  const response = await fetch('map/next_team_marker', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
         "X-CSRF-Token": document.querySelector('meta[name="csrf-token"]').getAttribute('content')
       }
     })
-      .then(response => response.json())
-      .then(data => {
-        // Traite les données du prochain point à visiter
-        const nextTeamMarker = data.next_team_marker.marker_coordinates;
-        const nextTeamMarkerMessage = data.next_team_marker.enigma;
-        // this.displayMarker(nextTeamMarker,nextTeamMarkerMessage); // le marqueur n'est pas affiché sur la map
-        this.enigmaModalTarget.innerText = nextTeamMarkerMessage; // Affiche l'énigme dans le modal
 
-      });
+    if (!response.ok) {
+      throw new Error("Failed to fetch next team marker.");
+    }
+    const data = await response.json();
+    // console.log(data);
+    // Traite les données du prochain point à visiter
+    const circleCoordinates = data.next_team_marker.circle_coordinates;
+    const nextTeamMarker = data.next_team_marker.marker_coordinates;
+    const nextTeamMarkerMessage = data.next_team_marker.enigma;
+
+    // Affiche l'énigme dans la modal
+    this.enigmaModalTarget.innerText = nextTeamMarkerMessage;
+
+    // On créé un cercle de centre NextTeamMarker mais on ne l'affiche pas sur la carte
+
+    this.circle = L.circle(circleCoordinates, {
+      radius: 50,
+      className: 'leaflet-circle-custom'
+    });
+
+    // console.log(nextTeamMarker);
+    return nextTeamMarker;
+
+  } catch (error) {
+    console.error('Error fetching the next team marker:', error);
+    return null; // En cas d'erreur, retourne null ou une autre valeur par défaut
+  }
   }
 
   // affichage des marqueurs déjà visités par l'équipe
@@ -76,34 +116,95 @@ export default class extends Controller {
         const visitedTeamMarkers = data.visited_team_markers;
         visitedTeamMarkers.forEach((visitedTeamMarker) => {
           this.displayMarker(visitedTeamMarker.marker_coordinates,visitedTeamMarker.name);
-          console.log(visitedTeamMarker)
+          // console.log(visitedTeamMarker)
         });
       })
 
   }
 
-  // fonction pour afficher un marqueur de géolocalisation de l'utilisateur
+  // fonction pour afficher et mettre à jour un marqueur de géolocalisation de l'utilisateur
   getLocation() {
     if (navigator.geolocation) {
-      this.watchId = navigator.geolocation.watchPosition(
-        (position) => this.showPosition(position), // Utilise une fonction fléchée pour maintenir le contexte
-        (error) => this.handleError(error) // Utilise une fonction fléchée pour maintenir le contexte
-      );
+      navigator.geolocation.watchPosition(this.updatePosition.bind(this), this.handleError.bind(this));
     } else {
       console.error("Geolocation is not supported by this browser.");
     }
   }
 
-  showPosition(position) {
-    const { latitude, longitude } = position.coords;
-    this.displayMarker([latitude, longitude], "Votre position actuelle");
-    console.log(`Latitude: ${latitude}, Longitude: ${longitude}`);
+  createMarker(lat, lng) {
+    // Création initiale du marqueur
+    this.userMarker = L.marker([lat, lng], {
+      icon: this.getUserLocationIcon() // Personnalisation de l'icône
+    }).addTo(this.map);
+  }
+
+  updatePosition(position) {
+    this.userLat = position.coords.latitude;
+    this.userLng = position.coords.longitude;
+
+    // const { latitude, longitude } = position.coords;
+
+    if (!this.userMarker) {
+      this.createMarker(this.userLat, this.userLng); // Création initiale
+    } else {
+      this.userMarker.setLatLng([this.userLat, this.userLng]); // Mise à jour de la position
+    }
+    if (this.nextPoint) { // Si on ne connait pas encore le prochain point, on ne peut pas calculer la distance
+      this.calculateDistanceToNextPoint(this.userLat,this.userLng)
+    }
+    // console.log(`Latitude: ${this.userLat}, Longitude: ${this.userLng}`);
+  }
+
+  getUserLocationIcon() {
+    // Retourne l'icône personnalisée pour la localisation de l'utilisateur
+    return L.divIcon({
+      className: 'user-location-icon',
+      iconSize: [30, 30] // Taille de l'icon, doit être aussi défini en css
+    });
   }
 
   handleError(error) {
-    console.error(`Error occurred: ${error.message}`);
+    console.error("Erreur de géolocalisation : ", error);
   }
 
+// Méthode pour calculer la distance entre l'utilisateur et le prochain point
+  calculateDistanceToNextPoint(userLat, userLng) {
+    const nextPointLat = this.nextPoint[0]; // Récupère les coordonnées du prochain point
+    const nextPointLng = this.nextPoint[1];
+
+    // Utilise la méthode distance de Leaflet pour calculer la distance en mètres
+    const distance = L.latLng(userLat, userLng).distanceTo(L.latLng(nextPointLat, nextPointLng));
+
+    // Afficher la distance en console ou l'afficher dans le DOM
+    // console.log(`Distance to next point: ${Math.round(distance)} meters`);
+    if (distance < 50) { // si l'utilisateur est à moins de 50m du prochain point on affiche le cercle
+
+        // Si le cercle n'est pas déjà ajouté à la carte, l'ajouter
+        if (!this.circle._map) {
+          this.circle.addTo(this.map);
+        }
+      } else {
+        // Si l'utilisateur s'éloigne, retirer le cercle de la carte
+        if (this.circle._map) {
+          this.map.removeLayer(this.circle);
+        }
+      }
+
+    // TODO retirer cette partie qui est uniquement pour les tests
+    // Optionnel : Mets à jour une valeur dans ton UI pour afficher la distance
+    document.getElementById('distanceToNextPoint').innerText = `Next point: ${Math.round(distance)} m`;
+  }
+
+
+
+
+
   // créer une fonction pour recentrer la map sur la position de l'utilisateur
+  recenter() {
+    console.log('Recenter map');
+    if (this.userLat && this.userLng) {
+      this.map.setView([this.userLat, this.userLng], 13); // Recentrage sur la position de l'utilisateur
+    }
+  }
 
 }
