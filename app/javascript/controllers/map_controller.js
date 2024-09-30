@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = [ "map", "enigmaModal" ]
+  static targets = [ "map", "enigmaModal", "recenterButton" ]
 
   connect() {
     console.log("Map connected")
@@ -21,6 +21,11 @@ export default class extends Controller {
         // console.log(nextPoint)
       }
     });
+
+
+    // Ecouteur pour le bouton de recentrage
+
+    // recenterButton.addEventListener('click', () => console.log('Recenter map'));
 
 
     // Exemple de marqueur pour les tests
@@ -134,17 +139,20 @@ try {
   }
 
   updatePosition(position) {
-    const { latitude, longitude } = position.coords;
+    this.userLat = position.coords.latitude;
+    this.userLng = position.coords.longitude;
+
+    // const { latitude, longitude } = position.coords;
 
     if (!this.userMarker) {
-      this.createMarker(latitude, longitude); // Création initiale
+      this.createMarker(this.userLat, this.userLng); // Création initiale
     } else {
-      this.userMarker.setLatLng([latitude, longitude]); // Mise à jour de la position
+      this.userMarker.setLatLng([this.userLat, this.userLng]); // Mise à jour de la position
     }
     if (this.nextPoint) { // Si on ne connait pas encore le prochain point, on ne peut pas calculer la distance
-      this.calculateDistanceToNextPoint(latitude,longitude)
+      this.calculateDistanceToNextPoint(this.userLat,this.userLng)
     }
-    // console.log(`Latitude: ${latitude}, Longitude: ${longitude}`);
+    // console.log(`Latitude: ${this.userLat}, Longitude: ${this.userLng}`);
   }
 
   getUserLocationIcon() {
@@ -169,7 +177,7 @@ try {
 
     // Afficher la distance en console ou l'afficher dans le DOM
     // console.log(`Distance to next point: ${Math.round(distance)} meters`);
-    if (distance < 50000) { // si l'utilisateur est à moins de 50m du prochain point on affiche le cercle
+    if (distance < 50) { // si l'utilisateur est à moins de 50m du prochain point on affiche le cercle
 
         // Si le cercle n'est pas déjà ajouté à la carte, l'ajouter
         if (!this.circle._map) {
@@ -192,5 +200,11 @@ try {
 
 
   // créer une fonction pour recentrer la map sur la position de l'utilisateur
+  recenter() {
+    console.log('Recenter map');
+    if (this.userLat && this.userLng) {
+      this.map.setView([this.userLat, this.userLng], 13); // Recentrage sur la position de l'utilisateur
+    }
+  }
 
 }
