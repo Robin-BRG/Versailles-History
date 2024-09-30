@@ -8,7 +8,9 @@ export default class extends Controller {
     this.displayMap();
     this.fetchVisitedTeamMarkers()
     this.fetchNextTeamMarker()
-    // this.getLocation(); // Géolocalisation désactivée pour le moment
+    this.getLocation(); // Géolocalisation désactivée pour le moment
+
+
 
 
     // Exemple de marqueur pour les tests
@@ -82,33 +84,57 @@ export default class extends Controller {
         const visitedTeamMarkers = data.visited_team_markers;
         visitedTeamMarkers.forEach((visitedTeamMarker) => {
           this.displayMarker(visitedTeamMarker.marker_coordinates,visitedTeamMarker.name);
-          console.log(visitedTeamMarker)
+          // console.log(visitedTeamMarker)
         });
       })
 
   }
 
-  // fonction pour afficher un marqueur de géolocalisation de l'utilisateur
+  // fonction pour afficher et mettre à jour un marqueur de géolocalisation de l'utilisateur
   getLocation() {
     if (navigator.geolocation) {
-      this.watchId = navigator.geolocation.watchPosition(
-        (position) => this.showPosition(position), // Utilise une fonction fléchée pour maintenir le contexte
-        (error) => this.handleError(error) // Utilise une fonction fléchée pour maintenir le contexte
-      );
+      navigator.geolocation.watchPosition(this.updatePosition.bind(this), this.handleError.bind(this));
     } else {
       console.error("Geolocation is not supported by this browser.");
     }
   }
 
-  showPosition(position) {
+  createMarker(lat, lng) {
+    // Création initiale du marqueur
+    this.userMarker = L.marker([lat, lng], {
+      icon: this.getUserLocationIcon() // Personnalisation de l'icône
+    }).addTo(this.map);
+  }
+
+  updatePosition(position) {
     const { latitude, longitude } = position.coords;
-    this.displayMarker([latitude, longitude], "Votre position actuelle");
+
+    if (!this.userMarker) {
+      this.createMarker(latitude, longitude); // Création initiale
+    } else {
+      this.userMarker.setLatLng([latitude, longitude]); // Mise à jour de la position
+    }
     console.log(`Latitude: ${latitude}, Longitude: ${longitude}`);
   }
 
-  handleError(error) {
-    console.error(`Error occurred: ${error.message}`);
+  getUserLocationIcon() {
+    // Retourne l'icône personnalisée pour la localisation de l'utilisateur
+    return L.divIcon({
+      className: 'user-location-icon',
+      iconSize: [30, 30] // Taille de l'icon, doit être aussi défini en css
+    });
   }
+
+  handleError(error) {
+    console.error("Erreur de géolocalisation : ", error);
+  }
+
+
+
+
+
+
+
 
   // créer une fonction pour recentrer la map sur la position de l'utilisateur
 
