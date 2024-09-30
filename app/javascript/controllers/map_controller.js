@@ -28,12 +28,11 @@ export default class extends Controller {
     // .bindPopup('Un point d\'exemple.')
     // .openPopup();
 
-    // L.circle([48.8049, 2.1204], {
-    //   radius: 2000,
+    // L.circle([48.7982, 2.12427], {
+    //   radius: 50,
     //   color: 'red', // Couleur du contour du cercle
     //   fillColor: '#f03', // Couleur de remplissage
     //   fillOpacity: 0.5,
-    //   zIndexOffset: 9999 // Ajuste ce z-index pour que le cercle soit au-dessus
     // }).addTo(this.map);
 
   }
@@ -72,7 +71,9 @@ try {
       throw new Error("Failed to fetch next team marker.");
     }
     const data = await response.json();
+    // console.log(data);
     // Traite les données du prochain point à visiter
+    const circleCoordinates = data.next_team_marker.circle_coordinates;
     const nextTeamMarker = data.next_team_marker.marker_coordinates;
     const nextTeamMarkerMessage = data.next_team_marker.enigma;
 
@@ -80,8 +81,8 @@ try {
     this.enigmaModalTarget.innerText = nextTeamMarkerMessage;
 
     // On créé un cercle de centre NextTeamMarker mais on ne l'affiche pas sur la carte
-    // TODO : modifier pour que le centre ne soit pas exactement le même que le marqueur
-    this.circle = L.circle(nextTeamMarker, {
+
+    this.circle = L.circle(circleCoordinates, {
       radius: 50,
       className: 'leaflet-circle-custom'
     });
@@ -168,7 +169,7 @@ try {
 
     // Afficher la distance en console ou l'afficher dans le DOM
     // console.log(`Distance to next point: ${Math.round(distance)} meters`);
-    if (distance < 50) { // si l'utilisateur est à moins de 50m du prochain point on affiche le cercle
+    if (distance < 50000) { // si l'utilisateur est à moins de 50m du prochain point on affiche le cercle
 
         // Si le cercle n'est pas déjà ajouté à la carte, l'ajouter
         if (!this.circle._map) {
