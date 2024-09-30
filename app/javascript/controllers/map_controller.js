@@ -8,22 +8,19 @@ export default class extends Controller {
     this.displayMap(); // affichage de la map
 
     // Affichage des marqueurs déjà visités par l'équipe
-    // this.fetchVisitedTeamMarkers() // pour l'instant on affiche pas ces marqueurs
+    this.fetchVisitedTeamMarkers() // pour l'instant on affiche pas ces marqueurs
 
     // Récupère et affiche la position de l'utilisateur
+    this.getLocation();
 
     // Récupère le prochain point à visiter
     this.fetchNextTeamMarker().then(nextPoint => {
       if (nextPoint) {
         // Stocker la position du prochain point
         this.nextPoint = nextPoint;
-        console.log(nextPoint)
-        ; // Une méthode pour calculer la distance à ce point
+        // console.log(nextPoint)
       }
     });
-    this.getLocation();
-
-
 
 
     // Exemple de marqueur pour les tests
@@ -43,8 +40,10 @@ export default class extends Controller {
   // fonction pour afficher la map avec un centrage sur Versailles
   displayMap() {
     const L = window.L;
+    // La position de Nation est [48.8701952, 2.3855104], 13
+    //Next Point 48.7982, 2.12427
     // La position de Versailles est [48.8049, 2.1204], 17, j'ai modifié avec la mienne pour les tests
-    this.map = L.map(this.mapTarget).setView([48.8701952, 2.3855104], 13); // TODO : ici on devrait centrer la map sur la position de l'utilisateur
+    this.map = L.map(this.mapTarget).setView([48.8049, 2.1204], 15); // TODO : ici on devrait centrer la map sur la position de l'utilisateur
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(this.map);
@@ -80,10 +79,12 @@ try {
     // Affiche l'énigme dans la modal
     this.enigmaModalTarget.innerText = nextTeamMarkerMessage;
 
-    L.circle(nextTeamMarker, {
+    // On créé un cercle de centre NextTeamMarker mais on ne l'affiche pas sur la carte
+    // TODO : modifier pour que le centre ne soit pas exactement le même que le marqueur
+    this.circle = L.circle(nextTeamMarker, {
       radius: 50,
       className: 'leaflet-circle-custom'
-    }).addTo(this.map);
+    });
 
     // console.log(nextTeamMarker);
     return nextTeamMarker;
@@ -157,21 +158,34 @@ try {
     console.error("Erreur de géolocalisation : ", error);
   }
 
-
 // Méthode pour calculer la distance entre l'utilisateur et le prochain point
-calculateDistanceToNextPoint(userLat, userLng) {
-  const nextPointLat = this.nextPoint[0]; // Récupère les coordonnées du prochain point
-  const nextPointLng = this.nextPoint[1];
+  calculateDistanceToNextPoint(userLat, userLng) {
+    const nextPointLat = this.nextPoint[0]; // Récupère les coordonnées du prochain point
+    const nextPointLng = this.nextPoint[1];
 
-  // Utilise la méthode distance de Leaflet pour calculer la distance en mètres
-  const distance = L.latLng(userLat, userLng).distanceTo(L.latLng(nextPointLat, nextPointLng));
+    // Utilise la méthode distance de Leaflet pour calculer la distance en mètres
+    const distance = L.latLng(userLat, userLng).distanceTo(L.latLng(nextPointLat, nextPointLng));
 
-  // Afficher la distance en console ou l'afficher dans le DOM
-  console.log(`Distance to next point: ${Math.round(distance)} meters`);
+    // Afficher la distance en console ou l'afficher dans le DOM
+    // console.log(`Distance to next point: ${Math.round(distance)} meters`);
+    if (distance < 50) { // si l'utilisateur est à moins de 50m du prochain point on affiche le cercle
 
-  // Optionnel : Mets à jour une valeur dans ton UI pour afficher la distance
-  document.getElementById('distanceToNextPoint').innerText = `Next point: ${Math.round(distance)} m`;
-}
+        // Si le cercle n'est pas déjà ajouté à la carte, l'ajouter
+        if (!this.circle._map) {
+          this.circle.addTo(this.map);
+        }
+      } else {
+        // Si l'utilisateur s'éloigne, retirer le cercle de la carte
+        if (this.circle._map) {
+          this.map.removeLayer(this.circle);
+        }
+      }
+
+    // TODO retirer cette partie qui est uniquement pour les tests
+    // Optionnel : Mets à jour une valeur dans ton UI pour afficher la distance
+    document.getElementById('distanceToNextPoint').innerText = `Next point: ${Math.round(distance)} m`;
+  }
+
 
 
 
