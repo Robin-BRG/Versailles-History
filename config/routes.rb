@@ -10,11 +10,11 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   # root "posts#index"
-  # get 'map', to: 'pages#map'
+
   get 'map', to: 'maps#show'
   get 'team', to: 'pages#team'
   get 'map/next_team_marker', to: 'maps#next_team_marker' # POST request to get the next team marker
   get 'map/visited_team_markers', to: 'maps#visited_team_markers' # GET request to get the visited team markers
-
-  # get 'next_team_marker', to: 'maps#next_team_marker'
+  post 'markers/:id/validate', to: 'maps#validate', as: 'validate_marker' # POST request to validate a marker
+  post 'map/raz', to: 'maps#raz' # POST request to reset the game
 end

@@ -1,11 +1,14 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = [ "map", "enigmaModal", "recenterButton" ]
+  static targets = [ "map", "enigmaModal", "recenterButton", "checkModalBody", "checkModalTitle" ]
+
+
 
   connect() {
+
     console.log("Map connected")
-    this.displayMap(); // affichage de la map
+    this.initializeMap(); // affichage de la map
 
     // Affichage des marqueurs déjà visités par l'équipe
     this.fetchVisitedTeamMarkers() // pour l'instant on affiche pas ces marqueurs
@@ -18,14 +21,9 @@ export default class extends Controller {
       if (nextPoint) {
         // Stocker la position du prochain point
         this.nextPoint = nextPoint;
-        // console.log(nextPoint)
+        console.log('Next point:', nextPoint.enigma);
       }
     });
-
-
-    // Ecouteur pour le bouton de recentrage
-
-    // recenterButton.addEventListener('click', () => console.log('Recenter map'));
 
 
     // Exemple de marqueur pour les tests
@@ -41,8 +39,8 @@ export default class extends Controller {
     // }).addTo(this.map);
 
   }
-  // fonction pour afficher la map avec un centrage sur Versailles
-  displayMap() {
+  // fonction initialiser la map avec un centrage sur Versailles
+  initializeMap() {
     const L = window.L;
     // La position de Nation est [48.8701952, 2.3855104], 13
     //Next Point 48.7982, 2.12427
@@ -51,14 +49,17 @@ export default class extends Controller {
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(this.map);
+
+
+    this.markers = []; // créé un array vide pour stocker les marqueurs
+    this.circle = null; // Initialisation du cercle à null
   }
 
-  // fonction pour afficher un marqueur sur la map
-  displayMarker(markerCoordinates,nextTeamMarkerMessage) {
-    const L = window.L;
-    L.marker(markerCoordinates).addTo(this.map)
-    .bindPopup(nextTeamMarkerMessage)
-    // .openPopup(); // Popup fermé par défaut
+  // fonctions pour ajouter un marqueur ou un cercle sur la map
+  addMarker(coordinates, message) {
+    const marker = L.marker(coordinates).addTo(this.map)
+    .bindPopup(message);
+    this.markers.push(marker); // Stocke le marqueur
   }
 
   // fonction pour récupérer le prochain point à visiter
@@ -76,24 +77,18 @@ try {
       throw new Error("Failed to fetch next team marker.");
     }
     const data = await response.json();
-    // console.log(data);
-    // Traite les données du prochain point à visiter
-    const circleCoordinates = data.next_team_marker.circle_coordinates;
-    const nextTeamMarker = data.next_team_marker.marker_coordinates;
-    const nextTeamMarkerMessage = data.next_team_marker.enigma;
 
     // Affiche l'énigme dans la modal
-    this.enigmaModalTarget.innerText = nextTeamMarkerMessage;
+    this.enigmaModalTarget.innerText = data.next_team_marker.enigma;
 
     // On créé un cercle de centre NextTeamMarker mais on ne l'affiche pas sur la carte
 
-    this.circle = L.circle(circleCoordinates, {
+      this.circle = L.circle(data.next_team_marker.circle_coordinates, {
       radius: 50,
       className: 'leaflet-circle-custom'
     });
 
-    // console.log(nextTeamMarker);
-    return nextTeamMarker;
+    return data.next_team_marker;
 
   } catch (error) {
     console.error('Error fetching the next team marker:', error);
@@ -115,8 +110,7 @@ try {
         // Traite les données des points déjà visités par l'équipe
         const visitedTeamMarkers = data.visited_team_markers;
         visitedTeamMarkers.forEach((visitedTeamMarker) => {
-          this.displayMarker(visitedTeamMarker.marker_coordinates,visitedTeamMarker.name);
-          // console.log(visitedTeamMarker)
+          this.addMarker(visitedTeamMarker.marker_coordinates,visitedTeamMarker.name);
         });
       })
 
@@ -141,8 +135,6 @@ try {
   updatePosition(position) {
     this.userLat = position.coords.latitude;
     this.userLng = position.coords.longitude;
-
-    // const { latitude, longitude } = position.coords;
 
     if (!this.userMarker) {
       this.createMarker(this.userLat, this.userLng); // Création initiale
@@ -169,15 +161,14 @@ try {
 
 // Méthode pour calculer la distance entre l'utilisateur et le prochain point
   calculateDistanceToNextPoint(userLat, userLng) {
-    const nextPointLat = this.nextPoint[0]; // Récupère les coordonnées du prochain point
-    const nextPointLng = this.nextPoint[1];
+    // console.log('Calculating distance to next point');
+    const nextPointLat = this.nextPoint.marker_coordinates[0]; // Récupère les coordonnées du prochain point
+    const nextPointLng = this.nextPoint.marker_coordinates[1];
 
     // Utilise la méthode distance de Leaflet pour calculer la distance en mètres
     const distance = L.latLng(userLat, userLng).distanceTo(L.latLng(nextPointLat, nextPointLng));
 
-    // Afficher la distance en console ou l'afficher dans le DOM
-    // console.log(`Distance to next point: ${Math.round(distance)} meters`);
-    if (distance < 50) { // si l'utilisateur est à moins de 50m du prochain point on affiche le cercle
+    if (distance < 50000) { // si l'utilisateur est à moins de 50m du prochain point on affiche le cercle
 
         // Si le cercle n'est pas déjà ajouté à la carte, l'ajouter
         if (!this.circle._map) {
@@ -193,11 +184,8 @@ try {
     // TODO retirer cette partie qui est uniquement pour les tests
     // Optionnel : Mets à jour une valeur dans ton UI pour afficher la distance
     document.getElementById('distanceToNextPoint').innerText = `Next point: ${Math.round(distance)} m`;
+    return distance;
   }
-
-
-
-
 
   // créer une fonction pour recentrer la map sur la position de l'utilisateur
   recenter() {
@@ -205,6 +193,84 @@ try {
     if (this.userLat && this.userLng) {
       this.map.setView([this.userLat, this.userLng], 13); // Recentrage sur la position de l'utilisateur
     }
+  }
+
+  // fonction de validation du marker
+  validateMarker() {
+    const distance = this.calculateDistanceToNextPoint(this.userLat,this.userLng);
+    if (distance < 50000) {
+      console.log('Marker validated');
+      // Envoi d'une requête pour valider le point
+      fetch(`markers/${this.nextPoint.team_marker_id}/validate`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          "X-CSRF-Token": document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        },
+        body: JSON.stringify({
+          visited: true
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        // Affiche un message de succès ou d'échec
+        if (data.success) {
+          this.clearMarkersAndCircles(); // On efface les marqueurs et cercles
+
+          // Afficher les marqueurs déjà visités par l'équipe
+          this.fetchVisitedTeamMarkers();
+          // Récupérer le prochain point à visiter
+          this.fetchNextTeamMarker().then(nextPoint => {
+            if (nextPoint) {
+              // Stocker la position du prochain point
+              this.nextPoint = nextPoint;
+            }
+          });
+          this.checkModalTitleTarget.innerText = 'Bravo !';
+          this.checkModalBodyTarget.innerText = `${this.nextPoint.enigma}`;
+
+          } else {
+            alert('Validation du point échouée.'); // TODO à retirer pour la prod
+          }
+        })
+      }
+  }
+
+
+  clearMarkersAndCircles() {
+    console.log('Clearing markers and circles');
+    // Supprimer tous les marqueurs
+    this.markers.forEach(marker => {
+      this.map.removeLayer(marker);
+    });
+
+    // Supprimer le cercle
+    this.map.removeLayer(this.circle);
+
+    // Vider les tableaux
+    this.markers = [];
+    this.circles = null;
+
+  }
+
+  raz() {
+    console.log('RAZ');
+    fetch('map/raz', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        "X-CSRF-Token": document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+      }
+    }).then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          console.log('RAZ réussie');
+        } else {
+          console.error('RAZ échouée');
+          // alert('RAZ échouée.'); // TODO à retirer pour la prod
+        }
+      })
+
   }
 
 }
