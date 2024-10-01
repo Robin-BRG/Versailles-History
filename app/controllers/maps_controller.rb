@@ -8,7 +8,6 @@ class MapsController < ApplicationController
     # Récupération du prochain team_marker à visiter
     next_team_marker = TeamMarker.where(team_id: current_user.team_id, visited: false).order(:order).first
     # TODO : gérer le cas ou tous les team markers ont été visités
-    p next_team_marker
     # Récupération du marker associé
     next_marker = Marker.find(next_team_marker.marker_id)
 
@@ -38,7 +37,6 @@ class MapsController < ApplicationController
   end
 
   def validate
-    p "hello world"
     marker = TeamMarker.find(params[:id])
     if marker.update!(visited: true)
       render json: { success: true }

@@ -21,7 +21,7 @@ export default class extends Controller {
       if (nextPoint) {
         // Stocker la position du prochain point
         this.nextPoint = nextPoint;
-        console.log('Next point:', nextPoint.enigma);
+        // console.log('Next point:', nextPoint.enigma);
       }
     });
 
@@ -238,6 +238,7 @@ try {
 
 
   clearMarkersAndCircles() {
+    // Efface les marqueurs et cercles de la carte
     console.log('Clearing markers and circles');
     // Supprimer tous les marqueurs
     this.markers.forEach(marker => {
@@ -254,6 +255,7 @@ try {
   }
 
   raz() {
+    // Réinitialise tous les TeamMarker de l'équipe
     console.log('RAZ');
     fetch('map/raz', {
       method: 'POST',
