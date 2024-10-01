@@ -51,7 +51,7 @@
 }
 
 .add_team {
-    border: 1px solid #1EDD88; /* Utilisez votre couleur verte */
+    border: 1px solid #1EDD88;
     width: 100vw;
     height: 100px;
     display: flex;
@@ -59,22 +59,22 @@
     align-items: center;
     border-radius: 15px;
     margin: 5px 20px;
-    position: relative; /* Ajoutez cette ligne pour le positionnement relatif */
+    position: relative;
 }
 
 .add_team a {
     height: 75px;
     width: 75px;
     border-radius: 50%;
-    background: #333333; /* Fond pour le lien */
+    background: #333333;
     display: flex;
     justify-content: center;
     align-items: center;
     text-decoration: none;
-    position: absolute; /* Positionne le bouton animé au centre du conteneur */
+    position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%); /* Centre le bouton */
+    transform: translate(-50%, -50%);
 }
 
 #container {
@@ -111,3 +111,33 @@
 //     transition: fill 300ms ease-in-out;
 //     // fill: $green /* Couleur plus claire pour contraster avec le fond sombre */
 // }
+
+.Delete-team {
+    background-color: red;
+    color: white;
+    padding: 5px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 12px;
+    display: inline-block;
+}
+
+.Join-team {
+    background-color: green;
+    color: white;
+    padding: 5px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 12px;
+    display: inline-block;
+}
+
+.Leave-team {
+    background-color: red;
+    color: white;
+    padding: 5px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 12px;
+    display: inline-block;
+}
