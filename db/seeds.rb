@@ -226,7 +226,7 @@ user = User.find_by(email: "john.doe@example.com")
 team = Team.find_by(name: "Green Drink")
 user.update!(team:)
 
-Marker.all.each do |marker|
+Marker.order(:id).each do |marker| # On ordonne les teamMarker par Id par facilité
   if Marker.all.index(marker) <= 4 # Les 4 premiers marqueurs sont visités
     visited = true
   else

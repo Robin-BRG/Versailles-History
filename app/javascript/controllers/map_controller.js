@@ -197,6 +197,15 @@ try {
 
   // fonction de validation du marker
   validateMarker() {
+    if (this.nextPoint.name === 'Hôtel Le Louis') {
+      // Si le prochain point est l'hôtel Le Louis, on affiche un message de succès
+      this.checkModalTitleTarget.innerText = 'Bravo !';
+      this.checkModalBodyTarget.innerHTML = `
+      <div> Féliciations vous avez trouvé l'ensemble des énigmes. Rdv à l'hotel Le Louis pour partager un cocktail</div>`;
+      return;
+    }
+
+
     const distance = this.calculateDistanceToNextPoint(this.userLat,this.userLng);
     if (distance < 50000) {
       console.log('Marker validated');
@@ -227,12 +236,18 @@ try {
             }
           });
           this.checkModalTitleTarget.innerText = 'Bravo !';
-          this.checkModalBodyTarget.innerText = `${this.nextPoint.enigma}`;
-
+          this.checkModalBodyTarget.innerHTML = `
+          <div> Féliciations vous avez validé l'énigme. Voici la prochaine :</div>
+          <div >${this.nextPoint.enigma}</div>`;
           } else {
-            alert('Validation du point échouée.'); // TODO à retirer pour la prod
+            alert('Oups il y a eu un problème, essayez de valider le point dans quelques minutes'); // TODO à retirer pour la prod
           }
         })
+      } else {
+        this.checkModalTitleTarget.innerText = 'Encore un effort !';
+        this.checkModalBodyTarget.innerHTML = `
+        <div> Vous y êtes presque, voici l'énigme du point à trouver:</div>
+        <div >${this.nextPoint.enigma}</div>`;
       }
   }
 
