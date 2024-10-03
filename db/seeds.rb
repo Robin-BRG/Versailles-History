@@ -207,8 +207,29 @@ end
 
 
 #  Specific seed
+
+# puts "Creating specific users and teams..."
+# User.create!(
+#   email: "john.doe@example.com",
+#   password: 'password', # Use a default password
+#   password_confirmation: 'password', # Ensure password confirmation matches
+#   first_name: "John",
+#   last_name: "Doe"
+# )
+
+# Team.create!(
+#   name: "Green Drink",
+#   captain: User.find_by(email: "john.doe@example.com")
+# )
+
+# # Assign team to user
+# user = User.find_by(email: "john.doe@example.com")
+# team = Team.find_by(name: "Green Drink")
+# user.update!(team:)
+
 puts "Creating specific users and teams..."
-User.create!(
+
+user = User.create!(
   email: "john.doe@example.com",
   password: 'password', # Use a default password
   password_confirmation: 'password', # Ensure password confirmation matches
@@ -216,15 +237,18 @@ User.create!(
   last_name: "Doe"
 )
 
-Team.create!(
+team = Team.create!(
   name: "Green Drink",
-  captain: User.find_by(email: "john.doe@example.com")
+  captain: user
 )
 
 # Assign team to user
-user = User.find_by(email: "john.doe@example.com")
-team = Team.find_by(name: "Green Drink")
-user.update!(team:)
+if user && team
+  user.update!(team: team)
+else
+  puts "Failed to create user or team"
+end
+
 
 Marker.order(:id).each do |marker| # On ordonne les teamMarker par Id par facilité
   if Marker.all.index(marker) <= 4 # Les 4 premiers marqueurs sont visités

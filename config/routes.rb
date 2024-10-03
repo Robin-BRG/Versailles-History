@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  resources :teams, only: [:index, :create, :destroy] do
+  resources :teams, only: [:index, :create, :destroy, :update] do
     member do
       post 'join'
       delete 'leave'

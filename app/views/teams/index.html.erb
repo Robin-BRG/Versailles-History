@@ -4,27 +4,27 @@
 <%= link_to "Map", map_path %>
 
 <% @teams.each do |team| %>
-  <div class="container_team">
-    <div class="team_card">
-      <div class="team_card_content">
-        <div class="team_card_first_row">
-          <h2><%= team.name %></h2>
-          <p><%= team.users.count %>/8</p>
-        </div>
-        <div class="team_card_second_row">
-          <p><%= team.captain&.first_name %> <%= team.captain&.last_name %></p>
-          <% if current_user == team.captain %>
-            <%= button_to 'Supprimer', team_path(team), method: :delete, class: 'Delete-team', data: { confirm: 'Êtes-vous sûr de vouloir supprimer cette équipe ?' } %>
-          <% elsif !current_user.team && team.users.count < 8 %>
-            <%= button_to 'Rejoindre', join_team_path(team), method: :post, class: 'Join-team' %>
-          <% elsif current_user.team == team %>
-            <%= button_to 'Quitter', leave_team_path(team), method: :delete, class: 'Leave-team' %>
-          <% end %>
+    <div class="container_team">
+      <div class="team_card">
+        <div class="team_card_content">
+          <div class="team_card_first_row">
+            <h2><%= team.name %></h2>
+            <p><%= team.users.count %>/8</p>
+          </div>
+          <div class="team_card_second_row">
+            <p><%= team.captain&.first_name %> <%= team.captain&.last_name %></p>
+            <% if current_user == team.captain && team.name.present? %>
+              <%= button_to 'Supprimer', team_path(team), method: :delete, class: 'Delete-team', data: { confirm: 'Êtes-vous sûr de vouloir supprimer cette équipe ?' } %>
+            <% elsif (!current_user.team || current_user.team.name.nil?) && team.users.count < 8 %>
+              <%= button_to 'Rejoindre', join_team_path(team), method: :post, class: 'Join-team' %>
+            <% elsif current_user.team == team %>
+              <%= button_to 'Quitter', leave_team_path(team), method: :delete, class: 'Leave-team' %>
+            <% end %>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-<% end %>
+  <% end %>
 
 <div class="container_add">
   <div class="add_team">
