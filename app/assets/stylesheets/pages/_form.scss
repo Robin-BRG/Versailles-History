@@ -1,11 +1,11 @@
-form {
-  color: white; /* Texte blanc */
-  background-color: #333; /* Couleur de fond pour contraste */
-  border-radius: 5px; /* Bord arrondi */
-  padding: 20px; /* Espacement interne */
-  margin: 0 auto; /* Centrer horizontalement */
-  width: 80%; /* Largeur par défaut pour mobile */
-}
+// form {
+//   color: white; /* Texte blanc */
+//   background-color: #333; /* Couleur de fond pour contraste */
+//   border-radius: 5px; /* Bord arrondi */
+//   padding: 20px; /* Espacement interne */
+//   margin: 0 auto; /* Centrer horizontalement */
+//   width: 80%; /* Largeur par défaut pour mobile */
+// }
 
 @media (min-width: 768px) {
   form {
@@ -27,4 +27,20 @@ form {
   border-radius: 5px; /* Bord arrondi de 5px */
   font-size: 16px; /* Taille de la police */
   cursor: pointer; /* Curseur de la souris */
+}
+
+/* Styles spécifiques pour les boutons dans les formulaires Devise */
+form button {
+  background-color: #3f8d6a; /* Couleur de fond verte pour les boutons de formulaire Devise */
+  color: white; /* Texte blanc */
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+/* Si le formulaire Devise a une classe spécifique */
+.devise-form button {
+  background-color: #3f8d6a; /* Styles uniquement pour Devise */
 }

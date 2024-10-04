@@ -1,3 +1,44 @@
 #enigmaModalBody {
   color: $gray ;
 }
+
+.modal-body {
+padding : 15px 15px 0 15px;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end; /* Aligne les boutons à droite */
+
+
+  .save-button {
+    background-color: #3f8d6a;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+}
+
+
+.marker .fa-circle-arrow-down:hover,
+.marker .fa-circle-arrow-up:hover {
+  transform: scale(1.1);
+  transition: transform 0.3s;
+}
+
+.marker .fa-circle-arrow-down,
+.marker .fa-circle-arrow-up {
+  cursor: pointer;
+  transition: transform 0.3s;
+}
+
+.marker h3 {
+  font-size: 1.2em; /* Adjust the size as needed */
+  color: black;
+}
+
+.marker p {
+  font-size: 0.9em; /* Smaller text size */
+  color: black; /* Text color */
+}
