@@ -6,13 +6,17 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <%= simple_form_for Team.new, url: teams_path, method: :post do |f| %>
-            <div class="form-group">
-              <%= f.input :name, label: "Nom de l'équipe", input_html: { class: 'form-control' } %>
-            </div>
-            <div class="form-group">
-              <%= f.button :submit, "Enregistrer", class: "btn btn-primary" %>
-            </div>
+          <% if current_user.team.present? %>
+            <%= simple_form_for current_user.team, url: team_path(current_user.team), method: :patch do |f| %>
+              <div class="form-group">
+                <%= f.input :name, label: "Nom de l'équipe", input_html: { class: 'form-control' } %>
+              </div>
+              <div class="form-group">
+                <%= f.button :submit, "Enregistrer", class: "btn btn-primary" %>
+              </div>
+            <% end %>
+          <% else %>
+            <p>Vous n'avez pas encore d'équipe. Veuillez vous inscrire pour en créer une.</p>
           <% end %>
         </div>
         <div class="modal-footer">
