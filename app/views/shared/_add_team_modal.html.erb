@@ -9,18 +9,15 @@
           <% if current_user.team.present? %>
             <%= simple_form_for current_user.team, url: team_path(current_user.team), method: :patch do |f| %>
               <div class="form-group">
-                <%= f.input :name, label: "Nom de l'équipe", input_html: { class: 'form-control' } %>
+                <%= f.input :name, label: "Nom de l'équipe", input_html: { class: 'form-control', maxlength: 20 } %>
               </div>
-              <div class="form-group">
-                <%= f.button :submit, "Enregistrer", class: "btn btn-primary" %>
+              <div class="modal-footer">
+                <%= f.button :submit, "Enregistrer", class: "save-button" %>
               </div>
             <% end %>
           <% else %>
-            <p>Vous n'avez pas encore d'équipe. Veuillez vous inscrire pour en créer une.</p>
+              <p>Vous n'avez pas encore d'équipe. Veuillez vous inscrire pour en créer une.</p>
           <% end %>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
         </div>
       </div>
     </div>

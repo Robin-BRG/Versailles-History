@@ -37,7 +37,7 @@ class TeamsController < ApplicationController
         current_user.update(team: new_team)
       end
       
-      redirect_to teams_path, notice: "Les joueurs ont été retirés et le nom de l'équipe a été supprimé avec succès."
+      redirect_to teams_path, notice: "L'équipe a été supprimée avec succès."
     else
       redirect_to teams_path, alert: "Vous n'êtes pas autorisé à modifier cette équipe."
     end

@@ -1,56 +1,149 @@
-.container_team {
+/* Conteneur général */
+.container {
     display: flex;
     justify-content: center;
 }
 
-.team_card {
-    height: 100px;
+/* Carte */
+.card {
     width: 100vw;
     margin: 10px 20px;
     background-color: rgb(55, 55, 55);
-    display: flex;
-    justify-content: center;
-    align-items: center;
     border-radius: 15px;
+    padding: 10px;
+    text-align: center;
 }
 
-.team_card_content {
+/* Contenu de la carte */
+.card-content {
     display: flex;
     flex-direction: column;
-    width: 100%;
-    padding: 10px;
 }
 
-.team_card_first_row {
+/* Première ligne (Titre) */
+.first-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    h2 {
+        color: white;
+        padding: 0;
+    }
+}
+
+
+
+/* Deuxième ligne (Capitaine et nombre de membres) */
+.second-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-top: 5px;
+
+    .captain {
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+    }
+
+    .members-count {
+        font-size: 16px;
+    }
+    p {
+        color: white;
+        padding: 10px 0px;
+    }
+
+    i {
+        margin-right: 5px;
+    }
 }
 
-.team_card_first_row h2,
-.team_card_first_row p {
-    margin: 0;
-}
-
-.team_card_second_row {
+/* Troisième ligne (Bouton et chevron) */
+.third-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-top: 10px;
+
+    .center-btn {
+        margin-left: auto;
+        margin-right: auto;
+    }
 }
 
-.team_card_second_row p,
-.team_card_second_row a {
+/* Styles pour les titres et paragraphes dans la carte */
+.card h2,
+.card p {
     margin: 0;
 }
 
+/* Boutons spécifiques avec couleurs */
+.btn {
+    background-color: transparent;
+    border: none;
+    padding: 5px;
+    cursor: pointer;
+    width: 200px;
+}
 
-.container_add {
+.btn-red {
+    background-color: #8d3f55;
+    color: white;
+    border-radius: 5px;
+    padding: 5px;
+    font-size: 12px;
+}
+
+.btn-green {
+    background-color: #3f8d6a;
+    color: white;
+    border-radius: 5px;
+    padding: 5px;
+    font-size: 12px;
+}
+
+/* Icône couronne */
+.fa-crown {
+    color: #FFD700;
+}
+
+/* Chevron flottant */
+.chevron {
+    font-size: 25px;
+    color: white;
+    cursor: pointer;
+    animation: float 2s infinite ease-in-out;
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+/* Liste des utilisateurs cachée */
+.user-list {
+    display: none;
+    margin-top: 20px;
+    color: white;
+    ul {
+        list-style-type: none;
+        padding: 0;
+    }
+
+}
+
+/* Conteneur pour ajouter une équipe */
+.add-container {
     display: flex;
     justify-content: center;
 }
 
-.add_team {
+.add-team {
     border: 1px solid #1EDD88;
     width: 100vw;
     height: 100px;
@@ -62,7 +155,7 @@
     position: relative;
 }
 
-.add_team a {
+.add-team a {
     height: 75px;
     width: 75px;
     border-radius: 50%;
@@ -77,67 +170,7 @@
     transform: translate(-50%, -50%);
 }
 
-#container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-    width: 100%;
-}
-
-#button2 {
-    width: 72px;
-    height: 72px;
-    border-radius: 50%;
-    cursor: pointer;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: rgb(55, 55, 55); /* Même couleur de fond pour le bouton 2 */
-}
-
-.initial {
-    box-shadow: 0px 12px 12px 0px rgba(0, 0, 0, 0.3),
-                0px -9px 24px 4.5px rgba(255, 255, 255, 0.1);
-}
-
-// svg {
-//     transform: rotate(-45deg);
-//     // width: 40%; // cette ligne empêche le cercle de s'afficher
-//     transition: all 400ms ease-in-out;
-// }
-
-// svg path {
-//     transition: fill 300ms ease-in-out;
-//     // fill: $green /* Couleur plus claire pour contraster avec le fond sombre */
-// }
-
-.Delete-team {
-    background-color: red;
+.fa-plus {
     color: white;
-    padding: 5px;
-    border-radius: 5px;
-    text-decoration: none;
-    font-size: 12px;
-    display: inline-block;
-}
-
-.Join-team {
-    background-color: green;
-    color: white;
-    padding: 5px;
-    border-radius: 5px;
-    text-decoration: none;
-    font-size: 12px;
-    display: inline-block;
-}
-
-.Leave-team {
-    background-color: red;
-    color: white;
-    padding: 5px;
-    border-radius: 5px;
-    text-decoration: none;
-    font-size: 12px;
-    display: inline-block;
+    font-size: 30px;
 }

@@ -1,8 +1,15 @@
 class MapsController < ApplicationController
   before_action :authenticate_user!
   def show
-    @markers = Marker.all
+    # @markers = Marker.all <== Je commente cette ligne pour pouvoir afficher les markers correctement dans le modal. Si ça créer des erreurs, il faudra remettre cette ligne.  
+      @markers = Marker.all.map do |marker|
+        team_marker = TeamMarker.find_by(marker_id: marker.id, team_id: current_user.team_id)
+        {
+          name: team_marker&.visited ? marker.name : '???',
+          content: team_marker&.visited ? marker.content : '',
+        }
   end
+end
 
   def next_team_marker
     # Récupération du prochain team_marker à visiter

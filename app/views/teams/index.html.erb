@@ -1,45 +1,64 @@
 <%= render 'shared/navbar' %>
 <%= render 'shared/add_team_modal' %>
-<%= link_to 'Home', root_path %>
-<%= link_to "Map", map_path %>
 
 <% @teams.each do |team| %>
-    <div class="container_team">
-      <div class="team_card">
-        <div class="team_card_content">
-          <div class="team_card_first_row">
-            <h2><%= team.name %></h2>
-            <p><%= team.users.count %>/8</p>
-          </div>
-          <div class="team_card_second_row">
-            <p><%= team.captain&.first_name %> <%= team.captain&.last_name %></p>
+  <div class="container">
+    <div class="card">
+      <div class="card-content">
+        
+        <!-- Première ligne : Le titre prend toute la largeur -->
+        <div class="first-row">
+          <h2><%= team.name %></h2>
+        </div>
+        
+        <!-- Deuxième ligne : Capitaine à gauche, nombre de personnes à droite -->
+        <div class="second-row captain-members">
+          <p class="captain">
+            <i class="fa-solid fa-crown"></i>
+            <%= team.captain&.first_name %> <%= team.captain&.last_name %>
+          </p>
+          <p class="members-count"><%= team.users.count %>/8</p>
+        </div>
+        
+        <!-- Troisième ligne : Bouton centré, chevron à droite -->
+        <div class="third-row">
+          <div class="center-btn">
             <% if current_user == team.captain && team.name.present? %>
-              <%= button_to 'Supprimer', team_path(team), method: :delete, class: 'Delete-team', data: { confirm: 'Êtes-vous sûr de vouloir supprimer cette équipe ?' } %>
+              <%= button_to 'Supprimer l\'équipe', team_path(team), method: :delete, class: 'btn btn-red', data: { confirm: 'Êtes-vous sûr de vouloir supprimer cette équipe ?' } %>
             <% elsif (!current_user.team || current_user.team.name.nil?) && team.users.count < 8 %>
-              <%= button_to 'Rejoindre', join_team_path(team), method: :post, class: 'Join-team' %>
+              <%= button_to "Rejoindre l'équipe", join_team_path(team), method: :post, class: 'btn btn-green' %>
             <% elsif current_user.team == team %>
-              <%= button_to 'Quitter', leave_team_path(team), method: :delete, class: 'Leave-team' %>
+              <%= button_to 'Quitter l\'équipe', leave_team_path(team), method: :delete, class: 'btn btn-red' %>
             <% end %>
           </div>
+          <i id="chevron-<%= team.id %>" class="fa-solid fa-circle-chevron-down chevron" onclick="toggleUserList(<%= team.id %>)"></i>
+        </div>
+        
+        <!-- Liste des utilisateurs cachée -->
+        <div id="user-list-<%= team.id %>" class="user-list">
+          <ul>
+            <% team.users.each do |user| %>
+              <% unless user == team.captain %>
+                <li><%= user.first_name %> <%= user.last_name %></li>
+              <% end %>
+            <% end %>
+          </ul>
         </div>
       </div>
     </div>
-  <% end %>
+  </div>
+<% end %>
 
-<div class="container_add">
-  <div class="add_team">
+
+
+<div class="add-container">
+  <div class="add-team">
     <a href="#" data-bs-toggle="modal" data-bs-target="#AddTeamModal">
-      <div id="container">
-        <!-- Bouton animé -->
-        <div id="button2" class="initial">
-          <svg id="svg2" class="rotateNull" viewBox="0 0 24 24">
-            <path id="path2" d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" />
-          </svg>
-        </div>
-      </div>
+      <i class="fa-solid fa-plus"></i>
     </a>
   </div>
 </div>
+
 
 <div class="cta-container">
   <%= link_to map_path, class: "button type--A" do %>
@@ -50,82 +69,18 @@
 </div>
 
 <script>
-const isTouch = ('ontouchstart' in window) ||
-                 (navigator.maxTouchPoints > 0) ||
-                 (navigator.msMaxTouchPoints > 0);
+  function toggleUserList(teamId) {
+    const userList = document.getElementById(`user-list-${teamId}`);
+    const chevronIcon = document.querySelector(`#chevron-${teamId}`);
 
-const button2 = document.getElementById("button2");
-const path2 = document.getElementById("path2");
-const svg2 = document.getElementById("svg2");
-
-const animationKeyFrame2 = [
-  {
-    boxShadow: `0px 12px 12px 0px rgba(0, 0, 0, 0.7), 0px -9px 24px 4.5px rgba(50, 50, 50, 0.4)`,
-    offset: 0.0
-  },
-  {
-    boxShadow: `0px 0px 0px 0px rgba(0, 0, 0, 0.7), 0px 0px 0px 0px rgba(50, 50, 50, 0.4), inset 0px 2px 8px 0px rgba(0, 0, 0, 0.7), inset 0px -2px 0px 0px rgba(50, 50, 50, 0.4)`,
-    offset: 0.5
-  },
-  {
-    boxShadow: `0px 12px 12px 0px rgba(0, 0, 0, 0.7), 0px -9px 24px 4.5px rgba(50, 50, 50, 0.4)`,
-    offset: 1.0
+    if (userList.style.display === "none") {
+      userList.style.display = "block";
+      chevronIcon.classList.remove('fa-circle-chevron-down');
+      chevronIcon.classList.add('fa-circle-chevron-up');
+    } else {
+      userList.style.display = "none";
+      chevronIcon.classList.remove('fa-circle-chevron-up');
+      chevronIcon.classList.add('fa-circle-chevron-down');
+    }
   }
-];
-
-const animationKeyFramePath = [
-  { width: "40%", offset: 0.0 },
-  { width: "35%", offset: 0.5 },
-  { width: "40%", offset: 1.0 }
-];
-
-const option = {
-  duration: 400,
-  iteration: 1,
-  easing: "ease-in-out"
-};
-
-const optionReverse = {
-  duration: 400,
-  iteration: 1,
-  easing: "ease-in-out",
-  direction: "reverse"
-};
-
-const pathAnimation = svg2.animate(animationKeyFramePath, option);
-
-let state2 = false;
-let animationReverse2 = button2.animate(animationKeyFrame2, optionReverse);
-let animation2 = button2.animate(animationKeyFrame2, option);
-
-animationReverse2.addEventListener("finish", function () {
-  state2 = false;
-});
-
-animation2.addEventListener("finish", function () {
-  state2 = true;
-});
-
-animation2.pause();
-animationReverse2.pause();
-pathAnimation.pause();
-
-function clickEvent2() {
-  if (!state2) {
-    animation2.play();
-    path2.classList.add("svgActive");
-    svg2.classList.add("rotate");
-  } else {
-    animationReverse2.play();
-    path2.classList.remove("svgActive");
-    svg2.classList.remove("rotate");
-  }
-  pathAnimation.play();
-}
-
-if (isTouch) {
-  button2.addEventListener("touchend", clickEvent2);
-} else {
-  button2.addEventListener("click", clickEvent2);
-}
 </script>
