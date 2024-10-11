@@ -179,7 +179,7 @@ export default class extends Controller {
 
 
     const distance = this.calculateDistanceToNextPoint(this.userLat,this.userLng);
-    if (distance < 100000) {
+    if (distance < 10) {
       // Envoi d'une requête pour valider le point
       fetch(`markers/${this.nextPoint.team_marker_id}/validate`, {
         method: 'POST',
