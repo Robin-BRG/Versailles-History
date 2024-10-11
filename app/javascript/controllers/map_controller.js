@@ -32,7 +32,6 @@ export default class extends Controller {
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(this.map);
 
-
     this.markers = []; // créé un array vide pour stocker les marqueurs
     this.circle = null; // Initialisation du cercle à null
   }
@@ -89,6 +88,7 @@ export default class extends Controller {
       .then(data => {
         // Traite les données des points déjà visités par l'équipe
         const visitedTeamMarkers = data.visited_team_markers;
+        console.log(visitedTeamMarkers);
         visitedTeamMarkers.forEach((visitedTeamMarker) => {
           this.addMarker(visitedTeamMarker.marker_coordinates,visitedTeamMarker.name);
         });
@@ -179,7 +179,7 @@ export default class extends Controller {
 
 
     const distance = this.calculateDistanceToNextPoint(this.userLat,this.userLng);
-    if (distance < 10) {
+    if (distance < 100000) {
       // Envoi d'une requête pour valider le point
       fetch(`markers/${this.nextPoint.team_marker_id}/validate`, {
         method: 'POST',
