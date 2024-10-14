@@ -181,6 +181,7 @@ export default class extends Controller {
 
     const distance = this.calculateDistanceToNextPoint(this.userLat, this.userLng);
 
+
     // Si la distance est trop grande, on affiche un message et on arrête la fonction
     if (distance >= 10) {
       this.checkModalTitleTarget.innerText = 'Encore un effort !';
