@@ -5,18 +5,8 @@
           <h1 class="modal-title fs-5" id="GalleryModalLabel">Les carnets de Joséphine</h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <div class="modal-body">
-          <% @markers.each_with_index do |marker, index| %>
-            <div class="marker">
-              <div style="display: flex; justify-content: space-between; align-items: center;">
-                <h3><%= marker[:name] %></h3>
-                <i id="chevron-<%= index %>" class="fa-solid fa-circle-arrow-down" onclick="toggleContent(<%= index %>)" style="cursor: pointer;"></i>
-              </div>
-              <div id="content-<%= index %>" style="display: none;">
-                <p><%= marker[:content] %></p>
-              </div>
-            </div>
-          <% end %>
+        <div class="modal-body" data-map-target="galleryModal">
+          <%#ici s'affiche le contenu de la galerie %>
         </div>
       </div>
     </div>
