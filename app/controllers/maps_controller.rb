@@ -1,15 +1,8 @@
 class MapsController < ApplicationController
   before_action :authenticate_user!
   def show
-    # @markers = Marker.all <== Je commente cette ligne pour pouvoir afficher les markers correctement dans le modal. Si ça créer des erreurs, il faudra remettre cette ligne.
-      @markers = Marker.all.map do |marker|
-        team_marker = TeamMarker.find_by(marker_id: marker.id, team_id: current_user.team_id)
-        {
-          name: team_marker&.visited ? marker.name : '???',
-          content: team_marker&.visited ? marker.content : '',
-        }
+
   end
-end
 
   def next_team_marker
     # Récupération du prochain team_marker à visiter
@@ -18,12 +11,15 @@ end
     # Récupération du marker associé
     next_marker = Marker.find(next_team_marker.marker_id)
 
+
+
     # Mise en forme des données pour le front
     @next_team_marker_data = {
       marker_coordinates: [next_marker.latitude, next_marker.longitude],
       circle_coordinates: [next_team_marker.circle_center_latitude, next_team_marker.circle_center_longitude],
       enigma: next_marker.enigma,
-      team_marker_id: next_team_marker.id
+      team_marker_id: next_team_marker.id,
+
     }
 
     render json: { next_team_marker: @next_team_marker_data }

@@ -180,7 +180,7 @@ export default class extends Controller {
 
 
     const distance = this.calculateDistanceToNextPoint(this.userLat,this.userLng);
-    if (distance < 10 ) {
+    if (distance < 100000 ) {
       // Envoi d'une requête pour valider le point
       fetch(`markers/${this.nextPoint.team_marker_id}/validate`, {
         method: 'POST',
@@ -205,12 +205,14 @@ export default class extends Controller {
             if (nextPoint) {
               // Stocker la position du prochain point
               this.nextPoint = nextPoint;
+              // Afficher un message de succès
+              this.checkModalTitleTarget.innerText = 'Bravo !';
+              this.checkModalBodyTarget.innerHTML = `
+              <div> Féliciations vous avez validé l'énigme. Voici la prochaine :</div>
+              <div >${this.nextPoint.enigma}</div>`;
             }
           });
-          this.checkModalTitleTarget.innerText = 'Bravo !';
-          this.checkModalBodyTarget.innerHTML = `
-          <div> Féliciations vous avez validé l'énigme. Voici la prochaine :</div>
-          <div >${this.nextPoint.enigma}</div>`;
+
           } else {
             alert('Oups il y a eu un problème, essayez de valider le point dans quelques minutes');
           }
