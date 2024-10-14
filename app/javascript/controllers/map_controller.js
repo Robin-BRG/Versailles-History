@@ -88,7 +88,6 @@ export default class extends Controller {
       .then(data => {
         // Traite les données des points déjà visités par l'équipe
         const visitedTeamMarkers = data.visited_team_markers;
-        // console.log(visitedTeamMarkers);
         visitedTeamMarkers.forEach((visitedTeamMarker) => {
           this.addMarker(visitedTeamMarker.marker_coordinates,visitedTeamMarker.name);
         });
@@ -170,59 +169,60 @@ export default class extends Controller {
 
   // fonction de validation du marker
   validateMarker() {
-    if (this.nextPoint.name === 'Hôtel Le Louis') {
-      // Si le prochain point est l'hôtel Le Louis, on affiche un message de succès
+    // Si le prochain point est l'hôtel Le Louis, on affiche un message de succès et on arrête la fonction
+
+    if (this.nextPoint.is_last_marker) {
+
       this.checkModalTitleTarget.innerText = 'Bravo !';
       this.checkModalBodyTarget.innerHTML = `
-      <div> Féliciations vous avez trouvé l'ensemble des énigmes. Rdv à l'hotel Le Louis pour partager un cocktail</div>`;
-      return;
+        <div> Félicitations, vous avez trouvé l'ensemble des énigmes. Rendez-vous à l'hôtel Le Louis pour partager un cocktail.</div>`;
+      return;  // On quitte la fonction ici
     }
 
+    const distance = this.calculateDistanceToNextPoint(this.userLat, this.userLng);
 
-    const distance = this.calculateDistanceToNextPoint(this.userLat,this.userLng);
-    if (distance < 100000 ) {
-      // Envoi d'une requête pour valider le point
-      fetch(`markers/${this.nextPoint.team_marker_id}/validate`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          "X-CSRF-Token": document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-        },
-        body: JSON.stringify({
-          visited: true
-        })
+    // Si la distance est trop grande, on affiche un message et on arrête la fonction
+    if (distance >= 10) {
+      this.checkModalTitleTarget.innerText = 'Encore un effort !';
+      this.checkModalBodyTarget.innerHTML = `
+        <div> Vous y êtes presque, voici l'énigme du point à trouver :</div>
+        <div>${this.nextPoint.enigma}</div>`;
+      return;  // On quitte la fonction ici si la distance est trop grande
+    }
+
+    // Si la distance est correcte, on fait l'appel pour valider le point
+    fetch(`markers/${this.nextPoint.team_marker_id}/validate`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        "X-CSRF-Token": document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+      },
+      body: JSON.stringify({
+        visited: true
       })
-      .then(response => response.json())
-      .then(data => {
-        // Affiche un message de succès ou d'échec
-        if (data.success) {
-          this.clearMarkersAndCircles(); // On efface les marqueurs et cercles
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        this.clearMarkersAndCircles(); // On efface les marqueurs et cercles
 
-          // Afficher les marqueurs déjà visités par l'équipe
-          this.fetchVisitedTeamMarkers();
-          // Récupérer le prochain point à visiter
-          this.fetchNextTeamMarker().then(nextPoint => {
-            if (nextPoint) {
-              // Stocker la position du prochain point
-              this.nextPoint = nextPoint;
-              // Afficher un message de succès
-              this.checkModalTitleTarget.innerText = 'Bravo !';
-              this.checkModalBodyTarget.innerHTML = `
-              <div> Féliciations vous avez validé l'énigme. Voici la prochaine :</div>
-              <div >${this.nextPoint.enigma}</div>`;
-            }
-          });
+        // Afficher les marqueurs déjà visités par l'équipe
+        this.fetchVisitedTeamMarkers();
 
-          } else {
-            alert('Oups il y a eu un problème, essayez de valider le point dans quelques minutes');
+        // Récupérer le prochain point à visiter
+        this.fetchNextTeamMarker().then(nextPoint => {
+          if (nextPoint) {
+            this.nextPoint = nextPoint;
+            this.checkModalTitleTarget.innerText = 'Bravo !';
+            this.checkModalBodyTarget.innerHTML = `
+              <div> Félicitations, vous avez validé l'énigme. Voici la prochaine :</div>
+              <div>${this.nextPoint.enigma}</div>`;
           }
-        })
+        });
       } else {
-        this.checkModalTitleTarget.innerText = 'Encore un effort !';
-        this.checkModalBodyTarget.innerHTML = `
-        <div> Vous y êtes presque, voici l'énigme du point à trouver:</div>
-        <div >${this.nextPoint.enigma}</div>`;
+        alert('Oups, il y a eu un problème. Essayez de valider le point dans quelques minutes.');
       }
+    });
   }
 
 
@@ -255,7 +255,7 @@ export default class extends Controller {
         if (data.success) {
           console.log('RAZ réussie');
         } else {
-          console.error('RAZ échouée');
+          console.log('RAZ échouée');
         }
       })
 

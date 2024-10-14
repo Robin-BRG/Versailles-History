@@ -11,7 +11,11 @@ class MapsController < ApplicationController
     # Récupération du marker associé
     next_marker = Marker.find(next_team_marker.marker_id)
 
-
+    if next_marker.name == "Hôtel Le Louis"
+      is_last_marker = true
+    else
+      is_last_marker = false
+    end
 
     # Mise en forme des données pour le front
     @next_team_marker_data = {
@@ -19,7 +23,7 @@ class MapsController < ApplicationController
       circle_coordinates: [next_team_marker.circle_center_latitude, next_team_marker.circle_center_longitude],
       enigma: next_marker.enigma,
       team_marker_id: next_team_marker.id,
-
+      is_last_marker:
     }
 
     render json: { next_team_marker: @next_team_marker_data }
