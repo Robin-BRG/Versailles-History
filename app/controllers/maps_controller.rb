@@ -1,7 +1,7 @@
 class MapsController < ApplicationController
   before_action :authenticate_user!
   def show
-    # @markers = Marker.all <== Je commente cette ligne pour pouvoir afficher les markers correctement dans le modal. Si ça créer des erreurs, il faudra remettre cette ligne.  
+    # @markers = Marker.all <== Je commente cette ligne pour pouvoir afficher les markers correctement dans le modal. Si ça créer des erreurs, il faudra remettre cette ligne.
       @markers = Marker.all.map do |marker|
         team_marker = TeamMarker.find_by(marker_id: marker.id, team_id: current_user.team_id)
         {
@@ -35,7 +35,8 @@ end
       marker = Marker.find(team_marker.marker_id)
       {
         marker_coordinates: [marker.latitude, marker.longitude],
-        name: marker.name
+        name: marker.name,
+        content: marker.content
         # circle_coordinates: [team_marker.circle_center_latitude, team_marker.circle_center_longitude],
         # enigma: marker.enigma
       }

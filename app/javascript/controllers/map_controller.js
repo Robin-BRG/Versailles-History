@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = [ "map", "enigmaModal", "recenterButton", "checkModalBody", "checkModalTitle" ]
+  static targets = [ "map", "enigmaModal", "recenterButton", "checkModalBody", "checkModalTitle", "galleryModal" ]
 
 
 
@@ -88,10 +88,11 @@ export default class extends Controller {
       .then(data => {
         // Traite les données des points déjà visités par l'équipe
         const visitedTeamMarkers = data.visited_team_markers;
-        console.log(visitedTeamMarkers);
+        // console.log(visitedTeamMarkers);
         visitedTeamMarkers.forEach((visitedTeamMarker) => {
           this.addMarker(visitedTeamMarker.marker_coordinates,visitedTeamMarker.name);
         });
+        this.updateGalleryModal(data);
       })
   }
 
@@ -179,7 +180,7 @@ export default class extends Controller {
 
 
     const distance = this.calculateDistanceToNextPoint(this.userLat,this.userLng);
-    if (distance < 10) {
+    if (distance < 10 ) {
       // Envoi d'une requête pour valider le point
       fetch(`markers/${this.nextPoint.team_marker_id}/validate`, {
         method: 'POST',
@@ -255,6 +256,44 @@ export default class extends Controller {
           console.error('RAZ échouée');
         }
       })
+
+  }
+
+
+  // fonction pour mettre à jour la modale de gallery
+  updateGalleryModal(data) {
+    let galleryHTML = "" // Initialisation de la variable qui contiendra le HTML
+    let index = 0 // Initialisation de l'index pour les chevrons
+
+    // Parcours des markers déjà visités par l'équipe
+    data.visited_team_markers.forEach((visitedTeamMarker) => {
+      galleryHTML += `<div class="marker">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <h3>${visitedTeamMarker.name}</h3>
+          <i id="chevron-${index}" class="fa-solid fa-circle-arrow-down" onclick="toggleContent(${index})" style="cursor: pointer;"></i>
+        </div>
+        <div id="content-${index}" style="display: none;">
+          <p>${visitedTeamMarker.content}</p>
+        </div>
+      </div>`;
+      index++
+    });
+
+    // Parcours des markers restants
+    for (let i = index; i <= 7; i++) {
+      galleryHTML += `<div class="marker">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <h3>???</h3>
+          <i id="chevron-${i}" class="fa-solid fa-circle-arrow-down" onclick="toggleContent(${i})" style="cursor: pointer;"></i>
+        </div>
+        <div id="content-${i}" style="display: none;">
+          <p></p>
+        </div>
+      </div>`;
+    }
+
+    // Affichage du HTML dans la modale
+    this.galleryModalTarget.innerHTML = galleryHTML;
 
   }
 
