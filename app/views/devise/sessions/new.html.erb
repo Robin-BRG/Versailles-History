@@ -1,3 +1,4 @@
+<%= render "shared/navbar" %>
 <h2>Connexion</h2>
 
 <%= simple_form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
@@ -11,7 +12,6 @@
                 required: true,
                 input_html: { autocomplete: "current-password" },
                 label: "Mot de passe" %>
-    <%= f.input :remember_me, as: :boolean, label: "Se souvenir de moi" if devise_mapping.rememberable? %>
   </div>
 
   <div class="form-actions">

@@ -13,20 +13,51 @@
   }
 }
 
-.form-actions {
-  display: flex;
-  justify-content: center; /* Centrer le bouton */
-  margin-top: 20px; /* Espacement au-dessus du bouton */
+.form-container {
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.form-actions button {
-  background-color: #3f8d6a; /* Couleur de fond verte */
-  color: white; /* Couleur du texte blanc */
-  padding: 10px 20px; /* Espacement interne */
-  border: none; /* Pas de bordure */
-  border-radius: 5px; /* Bord arrondi de 5px */
-  font-size: 16px; /* Taille de la police */
-  cursor: pointer; /* Curseur de la souris */
+.form-inputs {
+  margin-bottom: 15px;
+
+  label {
+    color: white;
+  }
+
+  input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+}
+
+.form-text {
+  color: white;
+}
+
+
+
+.form-actions {
+  text-align: center;
+}
+
+.form-actions .btn {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.form-actions .btn:hover {
+  background-color: #0056b3;
 }
 
 /* Styles spécifiques pour les boutons dans les formulaires Devise */
