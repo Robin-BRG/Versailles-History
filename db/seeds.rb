@@ -159,6 +159,78 @@ Marker.create!(
 
 puts "Markers created!"
 
+# Create 80 users with structured email format (mail1@mail1.com, mail2@mail2.com, etc.)
+puts "Creating 80 users..."
+users = 80.times.map do |i|
+  User.create!(
+    email: "mail#{i+1}@mail#{i+1}.com",
+    password: 'password',
+    password_confirmation: 'password',
+    first_name: Faker::Name.first_name,
+    last_name: Faker::Name.last_name
+  )
+end
+
+# Assign names to some teams to make them accessible
+puts "Naming some teams..."
+named_teams = []
+users.sample(10).each_with_index do |user, i|
+  team_name = "Team #{Faker::Team.creature}-#{i + 1}" # Generating unique team names
+  user.team.update!(name: team_name) # Update the user's team with a name
+  named_teams << user.team # Store the named teams for other users to join
+end
+
+# Assign some users to named teams
+puts "Assigning some users to named teams..."
+users.sample(30).each do |user|
+  team_to_join = named_teams.sample # Randomly pick a named team
+  user.update!(team: team_to_join) # Assign the user to the selected team
+end
+
+# Create specific users for testing purposes
+puts "Creating specific users for testing..."
+
+# User positioned less than 10m from a marker to mark it
+user_near_marker = User.create!(
+  email: "near.marker@example.com",
+  password: 'password',
+  password_confirmation: 'password',
+  first_name: "Test",
+  last_name: "NearMarker"
+)
+
+# Find a marker for the test user
+marker_close = Marker.first
+team_near_marker = user_near_marker.team
+
+# Update TeamMarker to simulate that the user is near the marker (within 10 meters)
+team_marker_near = TeamMarker.where(team_id: team_near_marker.id, marker_id: marker_close.id).first
+team_marker_near.update!(
+  circle_center_latitude: marker_close.latitude + 0.00005,  # Within 10 meters
+  circle_center_longitude: marker_close.longitude + 0.00005
+)
+
+# User positioned between 15-50m from a marker
+user_far_marker = User.create!(
+  email: "far.marker@example.com",
+  password: 'password',
+  password_confirmation: 'password',
+  first_name: "Test",
+  last_name: "FarMarker"
+)
+
+# Find another marker for the far user
+marker_far = Marker.last
+team_far_marker = user_far_marker.team
+
+# Update TeamMarker to simulate that the user is far from the marker (15 to 50 meters away)
+team_marker_far = TeamMarker.where(team_id: team_far_marker.id, marker_id: marker_far.id).first
+team_marker_far.update!(
+  circle_center_latitude: marker_far.latitude + 0.0003,  # Between 15 and 50 meters
+  circle_center_longitude: marker_far.longitude + 0.0003
+)
+
+puts "Seeding completed!"
 
 ## Create Users
 # puts "Creating random users..."
@@ -193,25 +265,45 @@ puts "Markers created!"
 # end
 
 ## Helper method to generate random latitude and longitude within a range
-def random_in_range(min, max)
-  (rand * (max - min)) + min
-end
-
-## Create TeamMarkers
-# 50.times do
-#   TeamMarker.create!(
-#     team_id: Team.pluck(:id).sample,
-#     marker_id: Marker.pluck(:id).sample,
-#     created_at: Faker::Time.backward(days: 365),
-#     updated_at: Faker::Time.backward(days: 365)
-#   )
+# def random_in_range(min, max)
+#   (rand * (max - min)) + min
 # end
 
+# ## Create TeamMarkers
+# # 50.times do
+# #   TeamMarker.create!(
+# #     team_id: Team.pluck(:id).sample,
+# #     marker_id: Marker.pluck(:id).sample,
+# #     created_at: Faker::Time.backward(days: 365),
+# #     updated_at: Faker::Time.backward(days: 365)
+# #   )
+# # end
 
-#  Specific seed
+
+# #  Specific seed
+
+# # puts "Creating specific users and teams..."
+# # User.create!(
+# #   email: "john.doe@example.com",
+# #   password: 'password', # Use a default password
+# #   password_confirmation: 'password', # Ensure password confirmation matches
+# #   first_name: "John",
+# #   last_name: "Doe"
+# # )
+
+# # Team.create!(
+# #   name: "Green Drink",
+# #   captain: User.find_by(email: "john.doe@example.com")
+# # )
+
+# # # Assign team to user
+# # user = User.find_by(email: "john.doe@example.com")
+# # team = Team.find_by(name: "Green Drink")
+# # user.update!(team:)
 
 # puts "Creating specific users and teams..."
-# User.create!(
+
+# user = User.create!(
 #   email: "john.doe@example.com",
 #   password: 'password', # Use a default password
 #   password_confirmation: 'password', # Ensure password confirmation matches
@@ -219,54 +311,34 @@ end
 #   last_name: "Doe"
 # )
 
-# Team.create!(
+# team = Team.create!(
 #   name: "Green Drink",
-#   captain: User.find_by(email: "john.doe@example.com")
+#   captain: user
 # )
 
 # # Assign team to user
-# user = User.find_by(email: "john.doe@example.com")
-# team = Team.find_by(name: "Green Drink")
-# user.update!(team:)
-
-puts "Creating specific users and teams..."
-
-user = User.create!(
-  email: "john.doe@example.com",
-  password: 'password', # Use a default password
-  password_confirmation: 'password', # Ensure password confirmation matches
-  first_name: "John",
-  last_name: "Doe"
-)
-
-team = Team.create!(
-  name: "Green Drink",
-  captain: user
-)
-
-# Assign team to user
-if user && team
-  user.update!(team: team)
-else
-  puts "Failed to create user or team"
-end
+# if user && team
+#   user.update!(team: team)
+# else
+#   puts "Failed to create user or team"
+# end
 
 
-Marker.order(:id).each do |marker| # On ordonne les teamMarker par Id par facilité
-  if Marker.all.index(marker) <= 4 # Les 4 premiers marqueurs sont visités
-    visited = true
-  else
-    visited = false
-  end
+# Marker.order(:id).each do |marker| # On ordonne les teamMarker par Id par facilité
+#   if Marker.all.index(marker) <= 4 # Les 4 premiers marqueurs sont visités
+#     visited = true
+#   else
+#     visited = false
+#   end
 
-  TeamMarker.create!(
-    team_id: Team.find_by(name: "Green Drink").id,
-    marker_id: marker.id,
-    order: Marker.all.index(marker),
-    visited:,
-    circle_center_latitude: random_in_range(marker.latitude - 0.001, marker.latitude + 0.001),
-    circle_center_longitude: random_in_range(marker.longitude - 0.001, marker.longitude + 0.001),
-  )
-end
+#   TeamMarker.create!(
+#     team_id: Team.find_by(name: "Green Drink").id,
+#     marker_id: marker.id,
+#     order: Marker.all.index(marker),
+#     visited:,
+#     circle_center_latitude: random_in_range(marker.latitude - 0.001, marker.latitude + 0.001),
+#     circle_center_longitude: random_in_range(marker.longitude - 0.001, marker.longitude + 0.001),
+#   )
+# end
 
-puts "Seeding completed!"
+# puts "Seeding completed!"

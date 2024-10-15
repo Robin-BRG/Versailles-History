@@ -1,4 +1,5 @@
 class TeamsController < ApplicationController
+  before_action :authenticate_user!
   before_action :check_existing_team, only: [:create]
   before_action :set_team, only: [:destroy, :join, :leave]
 

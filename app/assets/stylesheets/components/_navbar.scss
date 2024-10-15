@@ -1,22 +1,46 @@
 .navbar {
-  justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   backdrop-filter: blur(5px);
   position: sticky;
   top: 0;
   z-index: 1000;
   border-bottom: 1px solid #e0e0e0;
+  padding: 0 20px;
+  height: 60px; /* Ajuste la hauteur si nécessaire */
 }
 
-// .navbar-lewagon .navbar-collapse {
-//   flex-grow: 0;
-// }
-
-.navbar-brand {
-  margin-right: 0;
+.navbar-left {
+  flex: 1;
 }
 
-.navbar .navbar-brand img {
+.navbar-center {
+  flex: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.navbar-center img {
   width: 40px;
-
 }
 
+.navbar-right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+}
+
+.navbar-right .btn {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.fa-sign-out-alt {
+  margin-left: 8px; /* Ajoute un petit espace entre l'icône et le texte si nécessaire */
+  color: white;
+  font-size: 20px;
+}
