@@ -207,19 +207,30 @@ export default class extends Controller {
       if (data.success) {
         this.clearMarkersAndCircles(); // On efface les marqueurs et cercles
 
-        // Afficher les marqueurs déjà visités par l'équipe
-        this.fetchVisitedTeamMarkers();
-
         // Récupérer le prochain point à visiter
         this.fetchNextTeamMarker().then(nextPoint => {
           if (nextPoint) {
             this.nextPoint = nextPoint;
             this.checkModalTitleTarget.innerText = 'Bravo !';
-            this.checkModalBodyTarget.innerHTML = `
-              <div> Félicitations, vous avez validé l'énigme. Voici la prochaine :</div>
+            console.log(this.nextPoint);
+            if (this.nextPoint.is_last_marker) {
+              this.checkModalBodyTarget.innerHTML = `
               <div>${this.nextPoint.enigma}</div>`;
+
+            }else {
+            this.checkModalBodyTarget.innerHTML = `
+              <div> Félicitations, vous avez validé l'énigme. Voici la prochaine :
+              <br></br>
+              </div>
+
+              <div>${this.nextPoint.enigma}</div>`;
+            }
           }
         });
+
+        // Afficher les marqueurs déjà visités par l'équipe
+        this.fetchVisitedTeamMarkers();
+
       } else {
         alert('Oups, il y a eu un problème. Essayez de valider le point dans quelques minutes.');
       }

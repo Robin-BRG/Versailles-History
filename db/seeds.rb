@@ -146,7 +146,7 @@ Marker.create!(
     Bravo ! Joséphine te félicite pour ta réussite face à cette chasse aux trésors. Toute l'équipe green drink t'invite à reprendre des forces ainsi qu'à discuter au sujet de cette expérience à l'hôtel Le Louis.
   CONTENT
   enigma: <<~ENIGMA,
-    Bravo ! Joséphine te félicite pour ta réussite face à cette chasse aux trésors. Toute l'équipe green drink t'invite à reprendre des forces ainsi qu'à discuter au sujet de cette expérience à l'hôtel Le Louis.
+    Joséphine te félicite pour ta réussite face à cette chasse aux trésors. Toute l'équipe green drink t'invite à reprendre des forces ainsi qu'à discuter au sujet de cette expérience à l'hôtel Le Louis.
   ENIGMA
   found: false,
   radius: 50,  # Set radius to 50 meters

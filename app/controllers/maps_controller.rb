@@ -14,13 +14,16 @@ class MapsController < ApplicationController
       team_marker_id = next_team_marker.id
       is_last_marker = false
       circle_coordinates = [next_team_marker.circle_center_latitude, next_team_marker.circle_center_longitude]
+      if next_marker.name == "Hôtel Le Louis"
+        TeamMarker.where(team_id: current_user.team_id, visited: false).order(:order).update!(visited: true)
+        is_last_marker = true
+      end
     else
       next_marker = Marker.find_by(name: "Hôtel Le Louis")
       is_last_marker = true
       circle_coordinates = [next_marker.latitude, next_marker.longitude]
       team_marker_id = nil
     end
-
 
     # Mise en forme des données pour le front
     @next_team_marker_data = {
