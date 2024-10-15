@@ -183,7 +183,7 @@ export default class extends Controller {
 
 
     // Si la distance est trop grande, on affiche un message et on arrête la fonction
-    if (distance >= 100000) {
+    if (distance >= 10) {
       this.checkModalTitleTarget.innerText = 'Encore un effort !';
       this.checkModalBodyTarget.innerHTML = `
         <div> Vous y êtes presque, voici l'énigme du point à trouver :</div>
@@ -212,7 +212,7 @@ export default class extends Controller {
           if (nextPoint) {
             this.nextPoint = nextPoint;
             this.checkModalTitleTarget.innerText = 'Bravo !';
-            console.log(this.nextPoint);
+            // console.log(this.nextPoint);
             if (this.nextPoint.is_last_marker) {
               this.checkModalBodyTarget.innerHTML = `
               <div>${this.nextPoint.enigma}</div>`;
