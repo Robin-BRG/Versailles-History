@@ -9,20 +9,25 @@ class MapsController < ApplicationController
     next_team_marker = TeamMarker.where(team_id: current_user.team_id, visited: false).order(:order).first
     # TODO : gérer le cas ou tous les team markers ont été visités
     # Récupération du marker associé
-    next_marker = Marker.find(next_team_marker.marker_id)
-
-    if next_marker.name == "Hôtel Le Louis"
-      is_last_marker = true
-    else
+    if next_team_marker
+      next_marker = Marker.find(next_team_marker.marker_id)
+      team_marker_id = next_team_marker.id
       is_last_marker = false
+      circle_coordinates = [next_team_marker.circle_center_latitude, next_team_marker.circle_center_longitude]
+    else
+      next_marker = Marker.find_by(name: "Hôtel Le Louis")
+      is_last_marker = true
+      circle_coordinates = [next_marker.latitude, next_marker.longitude]
+      team_marker_id = nil
     end
+
 
     # Mise en forme des données pour le front
     @next_team_marker_data = {
       marker_coordinates: [next_marker.latitude, next_marker.longitude],
-      circle_coordinates: [next_team_marker.circle_center_latitude, next_team_marker.circle_center_longitude],
+      circle_coordinates:,
       enigma: next_marker.enigma,
-      team_marker_id: next_team_marker.id,
+      team_marker_id:,
       is_last_marker:
     }
 
