@@ -237,7 +237,6 @@ export default class extends Controller {
     });
   }
 
-
   clearMarkersAndCircles() { // Efface les marqueurs et cercles de la carte
 
     // Supprimer tous les marqueurs
