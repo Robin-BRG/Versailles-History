@@ -66,7 +66,7 @@ export default class extends Controller {
         radius: 50,
         className: 'leaflet-circle-custom'
       });
-
+      // console.log(data.next_team_marker);
       return data.next_team_marker;
 
     } catch (error) {
@@ -145,7 +145,7 @@ export default class extends Controller {
     // Utilise la méthode distance de Leaflet pour calculer la distance en mètres
     const distance = L.latLng(userLat, userLng).distanceTo(L.latLng(nextPointLat, nextPointLng));
 
-    if (distance < 50) { // si l'utilisateur est à moins de 50m du prochain point on affiche le cercle
+    if (distance <= 50) { // si l'utilisateur est à moins de 50m du prochain point on affiche le cercle
 
         // Si le cercle n'est pas déjà ajouté à la carte, l'ajouter
         if (!this.circle._map) {
@@ -183,7 +183,7 @@ export default class extends Controller {
 
 
     // Si la distance est trop grande, on affiche un message et on arrête la fonction
-    if (distance >= 10) {
+    if (distance >= 100000) {
       this.checkModalTitleTarget.innerText = 'Encore un effort !';
       this.checkModalBodyTarget.innerHTML = `
         <div> Vous y êtes presque, voici l'énigme du point à trouver :</div>
@@ -207,25 +207,35 @@ export default class extends Controller {
       if (data.success) {
         this.clearMarkersAndCircles(); // On efface les marqueurs et cercles
 
-        // Afficher les marqueurs déjà visités par l'équipe
-        this.fetchVisitedTeamMarkers();
-
         // Récupérer le prochain point à visiter
         this.fetchNextTeamMarker().then(nextPoint => {
           if (nextPoint) {
             this.nextPoint = nextPoint;
             this.checkModalTitleTarget.innerText = 'Bravo !';
-            this.checkModalBodyTarget.innerHTML = `
-              <div> Félicitations, vous avez validé l'énigme. Voici la prochaine :</div>
+            console.log(this.nextPoint);
+            if (this.nextPoint.is_last_marker) {
+              this.checkModalBodyTarget.innerHTML = `
               <div>${this.nextPoint.enigma}</div>`;
+
+            }else {
+            this.checkModalBodyTarget.innerHTML = `
+              <div> Félicitations, vous avez validé l'énigme. Voici la prochaine :
+              <br></br>
+              </div>
+
+              <div>${this.nextPoint.enigma}</div>`;
+            }
           }
         });
+
+        // Afficher les marqueurs déjà visités par l'équipe
+        this.fetchVisitedTeamMarkers();
+
       } else {
         alert('Oups, il y a eu un problème. Essayez de valider le point dans quelques minutes.');
       }
     });
   }
-
 
   clearMarkersAndCircles() { // Efface les marqueurs et cercles de la carte
 

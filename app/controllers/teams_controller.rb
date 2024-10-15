@@ -24,10 +24,10 @@ class TeamsController < ApplicationController
         initial_team = Team.find_by(captain: user, name: nil)
         user.update(team: initial_team) if initial_team
       end
-      
+
       # Effacer le nom de l'équipe actuelle
       @team.update(name: nil)
-      
+
       # Réassigner le capitaine à son équipe initiale sans nom
       unnamed_team = Team.find_by(captain: current_user, name: nil)
       if unnamed_team
@@ -36,7 +36,7 @@ class TeamsController < ApplicationController
         new_team = Team.create(captain: current_user)
         current_user.update(team: new_team)
       end
-      
+
       redirect_to teams_path, notice: "L'équipe a été supprimée avec succès."
     else
       redirect_to teams_path, alert: "Vous n'êtes pas autorisé à modifier cette équipe."
@@ -67,7 +67,7 @@ class TeamsController < ApplicationController
       redirect_to teams_path, alert: "Impossible de quitter cette équipe."
     end
   end
-  
+
   def update
     @team = current_user.team
     if @team.update(team_params)

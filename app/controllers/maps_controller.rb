@@ -7,22 +7,31 @@ class MapsController < ApplicationController
   def next_team_marker
     # Récupération du prochain team_marker à visiter
     next_team_marker = TeamMarker.where(team_id: current_user.team_id, visited: false).order(:order).first
-    # TODO : gérer le cas ou tous les team markers ont été visités
-    # Récupération du marker associé
-    next_marker = Marker.find(next_team_marker.marker_id)
 
-    if next_marker.name == "Hôtel Le Louis"
-      is_last_marker = true
-    else
+    # s'il y a un next team marqueur on continue
+    if next_team_marker
+      next_marker = Marker.find(next_team_marker.marker_id)
+      team_marker_id = next_team_marker.id
       is_last_marker = false
+      circle_coordinates = [next_team_marker.circle_center_latitude, next_team_marker.circle_center_longitude]
+      if next_marker.name == "Hôtel Le Louis"
+        # si le next team marqueur est l'hotel on le passe à validé
+        TeamMarker.where(team_id: current_user.team_id, visited: false).order(:order).update!(visited: true)
+        is_last_marker = true
+      end
+    else # s'il n'y a pas de next team marqueur on créé quand même des données à envoyer à l'API
+      next_marker = Marker.find_by(name: "Hôtel Le Louis")
+      is_last_marker = true
+      circle_coordinates = [next_marker.latitude, next_marker.longitude]
+      team_marker_id = nil
     end
 
     # Mise en forme des données pour le front
     @next_team_marker_data = {
       marker_coordinates: [next_marker.latitude, next_marker.longitude],
-      circle_coordinates: [next_team_marker.circle_center_latitude, next_team_marker.circle_center_longitude],
+      circle_coordinates:,
       enigma: next_marker.enigma,
-      team_marker_id: next_team_marker.id,
+      team_marker_id:,
       is_last_marker:
     }
 
@@ -37,8 +46,6 @@ class MapsController < ApplicationController
         marker_coordinates: [marker.latitude, marker.longitude],
         name: marker.name,
         content: marker.content
-        # circle_coordinates: [team_marker.circle_center_latitude, team_marker.circle_center_longitude],
-        # enigma: marker.enigma
       }
     end
     render json: { visited_team_markers: visited_markers_data }
