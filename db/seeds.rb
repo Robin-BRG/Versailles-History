@@ -159,76 +159,76 @@ Marker.create!(
 
 puts "Markers created!"
 
-# Create 80 users with structured email format (mail1@mail1.com, mail2@mail2.com, etc.)
-puts "Creating 80 users..."
-users = 80.times.map do |i|
-  User.create!(
-    email: "mail#{i+1}@mail#{i+1}.com",
-    password: 'password',
-    password_confirmation: 'password',
-    first_name: Faker::Name.first_name,
-    last_name: Faker::Name.last_name
-  )
-end
+# # Create 80 users with structured email format (mail1@mail1.com, mail2@mail2.com, etc.)
+# puts "Creating 80 users..."
+# users = 80.times.map do |i|
+#   User.create!(
+#     email: "mail#{i+1}@mail#{i+1}.com",
+#     password: 'password',
+#     password_confirmation: 'password',
+#     first_name: Faker::Name.first_name,
+#     last_name: Faker::Name.last_name
+#   )
+# end
 
-# Assign names to some teams to make them accessible
-puts "Naming some teams..."
-named_teams = []
-users.sample(10).each_with_index do |user, i|
-  team_name = "Team #{Faker::Team.creature}-#{i + 1}" # Generating unique team names
-  user.team.update!(name: team_name) # Update the user's team with a name
-  named_teams << user.team # Store the named teams for other users to join
-end
+# # Assign names to some teams to make them accessible
+# puts "Naming some teams..."
+# named_teams = []
+# users.sample(10).each_with_index do |user, i|
+#   team_name = "Team #{Faker::Team.creature}-#{i + 1}" # Generating unique team names
+#   user.team.update!(name: team_name) # Update the user's team with a name
+#   named_teams << user.team # Store the named teams for other users to join
+# end
 
-# Assign some users to named teams
-puts "Assigning some users to named teams..."
-users.sample(30).each do |user|
-  team_to_join = named_teams.sample # Randomly pick a named team
-  user.update!(team: team_to_join) # Assign the user to the selected team
-end
+# # Assign some users to named teams
+# puts "Assigning some users to named teams..."
+# users.sample(30).each do |user|
+#   team_to_join = named_teams.sample # Randomly pick a named team
+#   user.update!(team: team_to_join) # Assign the user to the selected team
+# end
 
-# Create specific users for testing purposes
-puts "Creating specific users for testing..."
+# # Create specific users for testing purposes
+# puts "Creating specific users for testing..."
 
-# User positioned less than 10m from a marker to mark it
-user_near_marker = User.create!(
-  email: "near.marker@example.com",
-  password: 'password',
-  password_confirmation: 'password',
-  first_name: "Test",
-  last_name: "NearMarker"
-)
+# # User positioned less than 10m from a marker to mark it
+# user_near_marker = User.create!(
+#   email: "near.marker@example.com",
+#   password: 'password',
+#   password_confirmation: 'password',
+#   first_name: "Test",
+#   last_name: "NearMarker"
+# )
 
-# Find a marker for the test user
-marker_close = Marker.first
-team_near_marker = user_near_marker.team
+# # Find a marker for the test user
+# marker_close = Marker.first
+# team_near_marker = user_near_marker.team
 
-# Update TeamMarker to simulate that the user is near the marker (within 10 meters)
-team_marker_near = TeamMarker.where(team_id: team_near_marker.id, marker_id: marker_close.id).first
-team_marker_near.update!(
-  circle_center_latitude: marker_close.latitude + 0.00005,  # Within 10 meters
-  circle_center_longitude: marker_close.longitude + 0.00005
-)
+# # Update TeamMarker to simulate that the user is near the marker (within 10 meters)
+# team_marker_near = TeamMarker.where(team_id: team_near_marker.id, marker_id: marker_close.id).first
+# team_marker_near.update!(
+#   circle_center_latitude: marker_close.latitude + 0.00005,  # Within 10 meters
+#   circle_center_longitude: marker_close.longitude + 0.00005
+# )
 
-# User positioned between 15-50m from a marker
-user_far_marker = User.create!(
-  email: "far.marker@example.com",
-  password: 'password',
-  password_confirmation: 'password',
-  first_name: "Test",
-  last_name: "FarMarker"
-)
+# # User positioned between 15-50m from a marker
+# user_far_marker = User.create!(
+#   email: "far.marker@example.com",
+#   password: 'password',
+#   password_confirmation: 'password',
+#   first_name: "Test",
+#   last_name: "FarMarker"
+# )
 
-# Find another marker for the far user
-marker_far = Marker.last
-team_far_marker = user_far_marker.team
+# # Find another marker for the far user
+# marker_far = Marker.last
+# team_far_marker = user_far_marker.team
 
-# Update TeamMarker to simulate that the user is far from the marker (15 to 50 meters away)
-team_marker_far = TeamMarker.where(team_id: team_far_marker.id, marker_id: marker_far.id).first
-team_marker_far.update!(
-  circle_center_latitude: marker_far.latitude + 0.0003,  # Between 15 and 50 meters
-  circle_center_longitude: marker_far.longitude + 0.0003
-)
+# # Update TeamMarker to simulate that the user is far from the marker (15 to 50 meters away)
+# team_marker_far = TeamMarker.where(team_id: team_far_marker.id, marker_id: marker_far.id).first
+# team_marker_far.update!(
+#   circle_center_latitude: marker_far.latitude + 0.0003,  # Between 15 and 50 meters
+#   circle_center_longitude: marker_far.longitude + 0.0003
+# )
 
 puts "Seeding completed!"
 
