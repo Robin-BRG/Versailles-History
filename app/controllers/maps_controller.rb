@@ -43,20 +43,31 @@ class MapsController < ApplicationController
     visited_markers_data = visited_team_markers.map do |team_marker|
       marker = Marker.find(team_marker.marker_id)
       {
+        id: marker.id,  # Ensure the ID is included
         marker_coordinates: [marker.latitude, marker.longitude],
         name: marker.name,
-        content: marker.content
+        content: marker.content,
+        visited: team_marker.visited  # Include the visited status
       }
     end
     render json: { visited_team_markers: visited_markers_data }
   end
 
   def validate
+    # Trouver le TeamMarker correspondant
     marker = TeamMarker.find(params[:id])
-    if marker.update!(visited: true)
-      render json: { success: true }
+    # Récupérer le mot de passe stocké dans le marker correspondant
+    marker_pass = Marker.find(marker.marker_id).marker_pass
+
+    # Comparer le mot de passe saisi par l'utilisateur avec celui du marker
+    if params[:password] == marker_pass
+      if marker.update!(visited: true)  # Si le mot de passe est correct, on valide le marqueur
+        render json: { success: true }
+      else
+        render json: { success: false }, status: :unprocessable_entity
+      end
     else
-      render json: { success: false }, status: :unprocessable_entity
+      render json: { success: false, error: 'Mot de passe incorrect' }, status: :unauthorized
     end
   end
 

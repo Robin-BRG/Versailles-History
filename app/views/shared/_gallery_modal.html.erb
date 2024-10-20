@@ -6,25 +6,36 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body" data-map-target="galleryModal">
-          <%#ici s'affiche le contenu de la galerie %>
+          <% 8.times do |i| %>
+            <div class="marker" id="marker-<%= i + 1 %>">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h3>???</h3>
+                <i id="chevron-<%= i + 1 %>" class="fa-solid fa-circle-arrow-down" onclick="toggleContent(<%= i + 1 %>)" style="cursor: pointer;"></i>
+              </div>
+              <div id="content-<%= i + 1 %>" style="display: none;">
+                <p></p>
+              </div>
+            </div>
+          <% end %>
         </div>
       </div>
     </div>
 </div>
 
 <script>
-  function toggleContent(index) {
-    const contentDiv = document.getElementById(`content-${index}`);
-    const chevronIcon = document.getElementById(`chevron-${index}`);
+    function toggleContent(index) {
+        const contentDiv = document.getElementById(`content-${index}`);
+        const chevronIcon = document.getElementById(`chevron-${index}`);
 
-    if (contentDiv.style.display === "none") {
-      contentDiv.style.display = "block";
-      chevronIcon.classList.remove('fa-circle-arrow-down');
-      chevronIcon.classList.add('fa-circle-arrow-up');
-    } else {
-      contentDiv.style.display = "none";
-      chevronIcon.classList.remove('fa-circle-arrow-up');
-      chevronIcon.classList.add('fa-circle-arrow-down');
+        // Vérifiez si le contenu est actuellement affiché ou non
+        if (contentDiv.style.display === "none") {
+            contentDiv.style.display = "block"; // Affiche le contenu
+            chevronIcon.classList.remove('fa-circle-arrow-down'); // Change l'icône en haut
+            chevronIcon.classList.add('fa-circle-arrow-up');
+        } else {
+            contentDiv.style.display = "none"; // Masque le contenu
+            chevronIcon.classList.remove('fa-circle-arrow-up'); // Change l'icône en bas
+            chevronIcon.classList.add('fa-circle-arrow-down');
+        }
     }
-  }
 </script>
