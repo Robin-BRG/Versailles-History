@@ -6,19 +6,18 @@ export default class extends Controller {
 
 
   connect() {
+    this.initializeMap();  // Initialisation de la carte
+    this.fetchVisitedTeamMarkers();  // Chargement des marqueurs déjà visités
+    this.getLocation();  // Récupération de la localisation de l'utilisateur
 
-    this.initializeMap(); // affichage de la map
+    // Attacher l'événement de soumission du mot de passe
+    const form = document.getElementById('passwordForm');
+    if (form) {
+      form.addEventListener('submit', this.validatePassword.bind(this)); // Gère la validation du mot de passe
+    }
 
-    // Affichage des marqueurs déjà visités par l'équipe
-    this.fetchVisitedTeamMarkers()
-
-    // Récupère et affiche la position de l'utilisateur
-    this.getLocation();
-
-    // Récupère le prochain point à visiter
     this.fetchNextTeamMarker().then(nextPoint => {
       if (nextPoint) {
-        // Stocker la position du prochain point
         this.nextPoint = nextPoint;
       }
     });
@@ -145,7 +144,7 @@ export default class extends Controller {
     // Utilise la méthode distance de Leaflet pour calculer la distance en mètres
     const distance = L.latLng(userLat, userLng).distanceTo(L.latLng(nextPointLat, nextPointLng));
 
-    if (distance <= 50) { // si l'utilisateur est à moins de 50m du prochain point on affiche le cercle
+    if (distance <= 200) { // si l'utilisateur est à moins de 50m du prochain point on affiche le cercle
 
         // Si le cercle n'est pas déjà ajouté à la carte, l'ajouter
         if (!this.circle._map) {
@@ -167,6 +166,49 @@ export default class extends Controller {
     }
   }
 
+  validatePassword(event) {
+    event.preventDefault();
+
+    const passwordInput = document.getElementById("passwordInput").value; // Récupérer le mot de passe entré
+
+    fetch(`markers/${this.nextPoint.team_marker_id}/validate`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        "X-CSRF-Token": document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+      },
+      body: JSON.stringify({
+        password: passwordInput // Envoi du mot de passe au back-end
+      })
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        this.clearMarkersAndCircles(); // Nettoyer la carte si succès
+
+        // Afficher un message de félicitations
+        this.checkModalBodyTarget.innerHTML = `
+          <div> Félicitations, vous avez validé ce point !</div>`;
+
+        // Fermer la modale après 2 secondes
+        setTimeout(() => {
+          const modal = bootstrap.Modal.getInstance(document.getElementById('CheckModal'));
+          if (modal) modal.hide();
+
+          // Réinitialiser le champ du mot de passe pour permettre une nouvelle validation
+          document.getElementById("passwordInput").value = '';
+          document.getElementById("errorMessage").style.display = 'none'; // Cacher le message d'erreur
+        }, 2000);
+      } else {
+        // Afficher le message d'erreur si le mot de passe est incorrect
+        document.getElementById("errorMessage").style.display = 'block';
+      }
+    })
+    .catch(error => {
+      console.error('Erreur de validation du marqueur :', error);
+    });
+  }
+
   // fonction de validation du marker
   validateMarker() {
     // Si le prochain point est l'hôtel Le Louis, on affiche un message de succès et on arrête la fonction
@@ -175,7 +217,8 @@ export default class extends Controller {
 
       this.checkModalTitleTarget.innerText = 'Bravo !';
       this.checkModalBodyTarget.innerHTML = `
-        <div> Félicitations, vous avez trouvé l'ensemble des énigmes. Rendez-vous à l'hôtel Le Louis pour partager un cocktail.</div>`;
+        <div> Félicitations, vous avez trouvé l'ensemble des énigmes. Rendez-vous à l'hôtel Le Louis pour partager un cocktail.<br>
+        vous pouvez valider le dernier point en entrant le mot de passe : ${this.nextPoint.marker_pass}</div>`;
       return;  // On quitte la fonction ici
     }
 
@@ -183,7 +226,7 @@ export default class extends Controller {
 
 
     // Si la distance est trop grande, on affiche un message et on arrête la fonction
-    if (distance >= 10) {
+    if (distance >= 50) {
       this.checkModalTitleTarget.innerText = 'Encore un effort !';
       this.checkModalBodyTarget.innerHTML = `
         <div> Vous y êtes presque, voici l'énigme du point à trouver :</div>
@@ -273,41 +316,30 @@ export default class extends Controller {
   }
 
 
-  // fonction pour mettre à jour la modale de gallery
   updateGalleryModal(data) {
-    let galleryHTML = "" // Initialisation de la variable qui contiendra le HTML
-    let index = 0 // Initialisation de l'index pour les chevrons
+    // Trier les marqueurs visités par ordre d'ID
+    const sortedMarkers = data.visited_team_markers
+      .filter(marker => marker.visited);
 
-    // Parcours des markers déjà visités par l'équipe
-    data.visited_team_markers.forEach((visitedTeamMarker) => {
-      galleryHTML += `<div class="marker">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-          <h3>${visitedTeamMarker.name}</h3>
-          <i id="chevron-${index}" class="fa-solid fa-circle-arrow-down" onclick="toggleContent(${index})" style="cursor: pointer;"></i>
-        </div>
-        <div id="content-${index}" style="display: none;">
-          <p>${visitedTeamMarker.content}</p>
-        </div>
-      </div>`;
-      index++
+    // Placer chaque marqueur dans la div correspondante
+    sortedMarkers.forEach((visitedTeamMarker) => {
+      const markerDiv = document.getElementById(`marker-${visitedTeamMarker.id}`);
+      if (markerDiv) {
+        markerDiv.querySelector('h3').innerText = visitedTeamMarker.name;
+        markerDiv.querySelector(`#content-${visitedTeamMarker.id} p`).innerText = visitedTeamMarker.content;
+      }
     });
-
-    // Parcours des markers restants
-    for (let i = index; i <= 7; i++) {
-      galleryHTML += `<div class="marker">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-          <h3>???</h3>
-          <i id="chevron-${i}" class="fa-solid fa-circle-arrow-down" onclick="toggleContent(${i})" style="cursor: pointer;"></i>
-        </div>
-        <div id="content-${i}" style="display: none;">
-          <p></p>
-        </div>
-      </div>`;
-    }
-
-    // Affichage du HTML dans la modale
-    this.galleryModalTarget.innerHTML = galleryHTML;
-
   }
 
+  
+  
+  
+
+  
 }
+
+
+
+
+
+

@@ -31,8 +31,9 @@ Marker.create!(
   ENIGMA
   found: false,
   radius: 50,  # Set radius to 50 meters
-  latitude: 48.799403,
-  longitude: 2.112206,
+  latitude: 48.800803,
+  longitude: 2.119673,
+  marker_pass: "1789",
   address: "Versailles, France",
   created_at: Time.now,
   updated_at: Time.now
@@ -48,8 +49,9 @@ Marker.create!(
   ENIGMA
   found: false,
   radius: 50,  # Set radius to 50 meters
-  latitude: 48.804865,
-  longitude: 2.126614,
+  latitude: 48.802118,
+  longitude: 2.120964,
+  marker_pass: "1774",
   address: "Versailles, France",
   created_at: Time.now,
   updated_at: Time.now
@@ -65,8 +67,9 @@ Marker.create!(
   ENIGMA
   found: false,
   radius: 50,  # Set radius to 50 meters
-  latitude: 48.8025572,
-  longitude: 2.1232462,
+  latitude:  48.802626,
+  longitude: 2.123635,
+  marker_pass: "1682",
   address: "Versailles, France",
   created_at: Time.now,
   updated_at: Time.now
@@ -82,8 +85,9 @@ Marker.create!(
   ENIGMA
   found: false,
   radius: 50,  # Set radius to 50 meters
-  latitude: 48.807072,
-  longitude: 2.125209,
+  latitude: 48.807565,
+  longitude: 2.128744,
+  marker_pass: "1919",
   address: "Versailles, France",
   created_at: Time.now,
   updated_at: Time.now
@@ -99,8 +103,9 @@ Marker.create!(
   ENIGMA
   found: false,
   radius: 50,  # Set radius to 50 meters
-  latitude: 48.806337,
-  longitude: 2.13107,
+  latitude: 48.806612,
+  longitude: 2.131930,
+  marker_pass: "1783",
   address: "Versailles, France",
   created_at: Time.now,
   updated_at: Time.now
@@ -116,8 +121,9 @@ Marker.create!(
   ENIGMA
   found: false,
   radius: 50,  # Set radius to 50 meters
-  latitude: 48.79996,
-  longitude: 2.124629,
+  latitude:  48.799994,
+  longitude: 2.124685,
+  marker_pass: "1793",
   address: "Versailles, France",
   created_at: Time.now,
   updated_at: Time.now
@@ -133,8 +139,9 @@ Marker.create!(
   ENIGMA
   found: false,
   radius: 50,  # Set radius to 50 meters
-  latitude: 48.7982,
-  longitude: 2.12427,
+  latitude: 48.798680,
+  longitude: 2.124575,
+  marker_pass: "1661",
   address: "Versailles, France",
   created_at: Time.now,
   updated_at: Time.now
@@ -146,12 +153,14 @@ Marker.create!(
     Bravo ! Joséphine te félicite pour ta réussite face à cette chasse aux trésors. Toute l'équipe green drink t'invite à reprendre des forces ainsi qu'à discuter au sujet de cette expérience à l'hôtel Le Louis.
   CONTENT
   enigma: <<~ENIGMA,
-    Joséphine te félicite pour ta réussite face à cette chasse aux trésors. Toute l'équipe green drink t'invite à reprendre des forces ainsi qu'à discuter au sujet de cette expérience à l'hôtel Le Louis.
+    Joséphine te félicite pour ta réussite face à cette chasse aux trésors. Toute l'équipe green drink t'invite à reprendre des forces ainsi qu'à discuter au sujet de cette expérience à l'hôtel Le Louis.Tu peux valider le dernier point en entrant le mot de passe : 1234
+
   ENIGMA
   found: false,
   radius: 50,  # Set radius to 50 meters
   latitude: 48.8018438,
   longitude: 2.1288123,
+  marker_pass: "1234",
   address: "Versailles, France",
   created_at: Time.now,
   updated_at: Time.now
@@ -342,3 +351,4 @@ puts "Seeding completed!"
 # end
 
 # puts "Seeding completed!"
+
